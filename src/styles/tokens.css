@@ -1,0 +1,27 @@
+/* Design tokens (brief §8). Tailwind v4 los lee con @theme y crea las utilidades
+   (bg-noche, text-hueso, font-mono…). Los mismos nombres van en Figma.
+   Fase 2: tipografías locales (Coolvetica, DeFonte Reduced Léger) y escala completa. */
+@theme {
+  /* Color */
+  --color-hueso: #f3efe6;
+  --color-noche: #0e0e0e;
+  --color-grafito: #1c1c1c;
+  --color-humo: #8c8c85;
+  --color-amarillo: #f5c518;
+  --color-naranja: #f27a1a;
+  --color-azul: #1f3fbf;
+  --color-rojo: #d62828;
+
+  /* Tipografía */
+  --font-display: 'Archivo', 'Arial Narrow', sans-serif; /* TODO: Coolvetica (licencia) */
+  --font-editorial: 'DeFonte Reduced', 'Space Grotesk', sans-serif;
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+
+  /* Retícula y espacio (múltiplos de 8) */
+  --spacing: 0.5rem;
+  --container-gutter: clamp(16px, 2.4vw, 44px);
+
+  /* Movimiento */
+  --ease-salida: cubic-bezier(0.16, 1, 0.3, 1);
+}

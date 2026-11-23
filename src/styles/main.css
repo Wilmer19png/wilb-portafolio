@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* Base provisional de la fase 1: legible y con la paleta de marca.
+   El diseño editorial (lienzo «Puerta directa · Wil B editorial») se construye en las fases 2 a 4. */
+@layer base {
+  html { color-scheme: dark; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-noche);
+    color: var(--color-hueso);
+    font-family: var(--font-sans);
+  }
+  main { flex: 1; padding: 48px var(--container-gutter); display: flex; flex-direction: column; gap: 24px; }
+  a { color: inherit; text-underline-offset: 0.25em; }
+  a:hover { color: var(--color-amarillo); }
+  :focus-visible { outline: 2px solid var(--color-amarillo); outline-offset: 3px; }
+  ::selection { background: var(--color-amarillo); color: var(--color-noche); }
+}
+
+@layer components {
+  .site-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 14px var(--container-gutter);
+    border-top: 4px solid;
+    border-image: linear-gradient(90deg, var(--color-azul) 25%, var(--color-rojo) 25% 50%, var(--color-naranja) 50% 75%, var(--color-amarillo) 75%) 1;
+  }
+  .site-header nav { display: flex; gap: 12px; align-items: center; }
+  .site-header nav:last-child { justify-content: flex-end; }
+  .pill {
+    display: inline-flex; align-items: center; height: 44px; padding: 0 22px;
+    border: 1.5px solid currentColor; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 15px; text-decoration: none;
+  }
+  .pill.is-on, .pill:hover { background: var(--color-hueso); color: var(--color-noche); }
+  .logo { font-family: var(--font-display); font-weight: 800; font-size: 28px; text-decoration: none; }
+  .lang-toggle { font-family: var(--font-mono); font-size: 13px; }
+  .lang-toggle a { opacity: 0.55; text-decoration: none; }
+  .split-title {
+    margin: 0; display: flex; justify-content: space-between; gap: 24px;
+    font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+    font-size: clamp(2.6rem, 5.6vw, 6.6rem); line-height: 0.8; letter-spacing: -0.02em;
+  }
+  .works-list { font-family: var(--font-mono); text-transform: uppercase; display: flex; flex-direction: column; gap: 12px; padding: 0; list-style: none; }
+  .project dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 24px; font-family: var(--font-mono); }
+  .project dd { margin: 0; }
+  .project-nav { display: flex; justify-content: space-between; gap: 16px; font-family: var(--font-mono); }
+  .note { font-family: var(--font-mono); font-size: 13px; color: var(--color-humo); }
+  .site-footer {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 28px var(--container-gutter) 36px; font-family: var(--font-mono); font-size: 15px;
+  }
+  .site-footer span { display: inline-flex; align-items: center; gap: 8px; }
+}
+
+@media (max-width: 900px) {
+  .site-header { grid-template-columns: 1fr auto; }
+  .site-header nav:first-child { display: none; }
+  .split-title { flex-direction: column; }
+}
