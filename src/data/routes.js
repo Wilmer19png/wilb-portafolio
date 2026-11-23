@@ -10,6 +10,7 @@ export const pages = [
   { id: 'sobre', template: 'sobre', es: '/sobre-mi/', en: '/en/about/' },
   { id: 'contacto', template: 'contacto', es: '/contacto/', en: '/en/contact/' },
   { id: 'historia', template: 'historia', es: '/historia/', en: '/en/story/' },
+  { id: 'sistema', template: 'sistema', es: '/sistema/', en: '/en/system/' }, // sistema de diseño (Atomic Design), fuera del menú
   ...projects.map((p) => ({
     id: `proyecto:${p.slug}`,
     template: 'proyecto',

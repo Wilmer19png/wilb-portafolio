@@ -1,0 +1,80 @@
+/* ÁTOMOS: estilos de src/render/atoms.js (misma clase que el nombre del átomo). */
+@layer components {
+  /* Pill */
+  .pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 44px; padding: 0 22px; white-space: nowrap; text-decoration: none;
+    border: 1.5px solid color-mix(in srgb, currentColor 85%, transparent); border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--text-meta);
+    transition: background-color .2s, color .2s, border-color .2s;
+  }
+  .pill:hover, .pill.is-on { background: var(--color-hueso); color: var(--color-noche); border-color: var(--color-hueso); }
+
+  /* LangToggle */
+  .langtoggle { font-family: var(--font-mono); font-size: var(--text-meta-sm); white-space: nowrap; }
+  .langtoggle a { opacity: .55; text-decoration: none; padding: 12px 2px; }
+  .langtoggle a:hover { opacity: 1; color: var(--color-amarillo); }
+
+  /* Logo */
+  .logo { display: block; width: min(380px, 70vw); height: 50px; }
+  .logo canvas { display: block; width: 100%; height: 100%; }
+
+  /* Tape */
+  .tape { display: flex; }
+  .tape--linea { height: var(--tape-height); }
+  .tape--linea > span { flex: 1; }
+  .tape--marca { gap: 4px; height: var(--tape-height); }
+  .tape--marca > span { width: 28px; }
+  .tape--marca > span:last-child { width: 14px; }
+
+  /* ButtonPrimary */
+  .buttonprimary {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 52px; padding: 0 26px; border: 0; border-radius: var(--radius-pill); cursor: pointer; text-decoration: none;
+    background: var(--color-hueso); color: var(--color-noche);
+    font-family: var(--font-mono); font-size: var(--text-meta); text-transform: uppercase;
+    transition: background-color .2s;
+  }
+  .buttonprimary:hover { background: var(--color-naranja); color: var(--color-noche); }
+
+  /* Input */
+  .input {
+    font: inherit; font-size: 16px; padding: 12px 0; width: 100%;
+    background: transparent; color: inherit; border: 0; border-bottom: 1.5px solid currentColor; border-radius: 0;
+  }
+  .input:focus { outline: none; border-bottom-color: var(--color-naranja); }
+  textarea.input { resize: vertical; }
+
+  /* Tag */
+  .tag { display: inline-flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 14px; text-transform: uppercase; }
+  .tag__chip { width: 8px; height: 8px; }
+
+  /* Folio */
+  .folio { font-family: var(--font-mono); font-size: var(--text-meta); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .folio b { font-family: var(--font-display); font-weight: 800; }
+
+  /* LightSwitch */
+  .lightswitch { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-family: var(--font-mono); font-size: var(--text-meta); text-transform: uppercase; }
+  .lightswitch__placa { width: 22px; height: 32px; border-radius: 4px; background: #fbf9f3; display: flex; align-items: center; justify-content: center; }
+  .lightswitch__placa > span { width: 7px; height: 13px; border-radius: 2px; background: var(--color-noche); transform: translateY(-4px); transition: transform .25s var(--ease-salida); }
+  .lightswitch:hover .lightswitch__placa > span { transform: translateY(4px); }
+
+  /* RakunEye */
+  .rakuneye { display: block; width: 34px; height: 22px; }
+
+  /* Grain: grano de película (la caja que lo contiene debe tener position y overflow: hidden) */
+  .grain {
+    position: absolute; inset: -20%; pointer-events: none;
+    background-image: url('/img/grano-pelicula.svg'); background-size: 220px 220px;
+    mix-blend-mode: overlay; opacity: .32;
+    animation: grain .5s steps(1) infinite;
+  }
+  @keyframes grain {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-6%, 4%); }
+    50% { transform: translate(5%, -7%); }
+    75% { transform: translate(-3%, -4%); }
+    100% { transform: translate(4%, 6%); }
+  }
+  @media (prefers-reduced-motion: reduce) { .grain { animation: none; } }
+}

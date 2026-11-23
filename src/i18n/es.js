@@ -62,6 +62,18 @@ export default {
   story: {
     title: 'Historia',
   },
+  system: {
+    title: "Sistema de diseño",
+    left: "Sistema",
+    right: "de diseño",
+    atoms: "Átomos",
+    colors: "Color",
+    type: "Tipografía",
+    sample: "Cuento historias con las manos.",
+    name: "Tu nombre",
+    send: "Escríbeme",
+    play: "Play"
+  },
   todo: 'TODO',
   phase1: 'Fase 1 · base del proyecto. El diseño llega en las fases 2 a 4.',
 };

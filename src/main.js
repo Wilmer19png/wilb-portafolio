@@ -1,5 +1,12 @@
 // Entrada común de todas las páginas.
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource-variable/space-grotesk/wght.css';
+import '@fontsource/space-mono/400.css';
+import '@fontsource/space-mono/700.css';
 import { currentLang } from './lib/i18n.js';
+import { mountAll } from './lib/logo/mount';
+
+mountAll();
 
 const KEY = 'wilb:lang';
 const lang = currentLang();

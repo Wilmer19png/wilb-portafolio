@@ -34,6 +34,7 @@ Español es el idioma base; todo existe también en inglés.
 | `/sobre-mi/` | `/en/about/` |
 | `/contacto/` | `/en/contact/` |
 | `/historia/` | `/en/story/` |
+| `/sistema/` | `/en/system/` (sistema de diseño, fuera del menú) |
 
 - Cada página tiene **una sola plantilla** en `src/pages/`. El plugin `plugins/i18n-pages.js` la
   genera en los dos idiomas: en desarrollo al vuelo y en el build como `dist/<ruta>/index.html`.
@@ -70,15 +71,25 @@ src/
 
 ## Atomic Design
 
+Los átomos están en `src/render/atoms.js` (HTML) y `src/styles/atoms.css` (estilos, misma clase que el nombre). La página `/sistema/` los muestra todos junto a los tokens.
+
 Los nombres son los mismos en Figma y en el código (brief §13): átomos (`Pill`, `LangToggle`,
 `Logo`…), moléculas (`WorkCard`, `NavGroup`…), organismos (`Header`, `HomeReel`, `WorksOverview`,
 `Footer`…) y plantillas (`HomeTemplate`, `WorksTemplate`, `ProjectTemplate`, `StoryTemplate`).
+
+## Logo animado
+
+El logo es la misma animación hecha en Remotion: `src/lib/logo/scene.ts` y `words.ts` son copia de `Videos/WilB animacion logo/logo-anim/src` (ahí se editan; luego se copian aquí). `canvas.ts` lo dibuja en un `<canvas>` y `mount.ts` arranca cada `<canvas data-logo>` (`data-mode="intro"` se arma una vez, `"loop"` repite BLUR / FOCUS / LIT; `data-color` lo pone de un solo color). Con «reducir movimiento» se ve el logo terminado.
+
+## Tipografías
+
+Archivo (titulares, ancho 72 %), Space Grotesk y Space Mono, todas con licencia OFL e instaladas en local con Fontsource (no se cargan de Google). DeFonte Reduced queda pendiente de licencia.
 
 ## Fases
 
 - [x] 0. Boceto en el lienzo de diseño
 - [x] 1. Proyecto base, estructura e idiomas
-- [ ] 2. Tokens, tipografías y átomos
+- [x] 2. Tokens, tipografías y átomos (ver `/sistema/`)
 - [ ] 3. Moléculas y organismos base (Header con el logo animado, Footer…)
 - [ ] 4. Inicio + Trabajos + Proyecto
 - [ ] 5–11. Historia, piezas editoriales, juego, contacto, proceso

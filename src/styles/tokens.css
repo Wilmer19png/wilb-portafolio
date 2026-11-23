@@ -1,27 +1,56 @@
-/* Design tokens (brief §8). Tailwind v4 los lee con @theme y crea las utilidades
-   (bg-noche, text-hueso, font-mono…). Los mismos nombres van en Figma.
-   Fase 2: tipografías locales (Coolvetica, DeFonte Reduced Léger) y escala completa. */
+/* Design tokens (brief §8 + lienzo «Puerta directa · Wil B editorial»).
+   Tailwind v4 los lee con @theme y crea las utilidades (bg-noche, text-hueso, font-mono, text-display…).
+   Los mismos nombres van en Figma. */
 @theme {
-  /* Color */
-  --color-hueso: #f3efe6;
-  --color-noche: #0e0e0e;
-  --color-grafito: #1c1c1c;
-  --color-humo: #8c8c85;
-  --color-amarillo: #f5c518;
-  --color-naranja: #f27a1a;
-  --color-azul: #1f3fbf;
-  --color-rojo: #d62828;
+  /* ---- Color ---- */
+  --color-hueso: #f3efe6;     /* texto sobre oscuro, fondo claro */
+  --color-noche: #0e0e0e;     /* fondo oscuro (Inicio) */
+  --color-grafito: #1c1c1c;   /* superficies en oscuro, texto en claro */
+  --color-carbon: #161616;    /* fondo de Trabajos */
+  --color-papel: #e7e6e3;     /* fondo claro (Sobre mí / Contacto en modo claro) */
+  --color-humo: #8c8c85;      /* texto secundario */
+  --color-amarillo: #f5c518;  /* acento, foco, LIT */
+  --color-naranja: #f27a1a;   /* llamados a la acción, FOCUS */
+  --color-azul: #1f3fbf;      /* BLUR */
+  --color-rojo: #d62828;      /* REC, error */
 
-  /* Tipografía */
-  --font-display: 'Archivo', 'Arial Narrow', sans-serif; /* TODO: Coolvetica (licencia) */
-  --font-editorial: 'DeFonte Reduced', 'Space Grotesk', sans-serif;
-  --font-sans: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono: 'Space Mono', ui-monospace, monospace;
+  /* ---- Tipografía ---- */
+  --font-display: 'Archivo Variable', 'Arial Narrow', sans-serif;  /* titulares partidos (wdth 72 %, peso 800) */
+  --font-sans: 'Space Grotesk Variable', system-ui, sans-serif;    /* párrafos */
+  --font-mono: 'Space Mono', ui-monospace, monospace;               /* menú, metadatos, pies */
+  --font-editorial: 'DeFonte Reduced', 'Space Grotesk Variable', sans-serif; /* TODO: licencia DeFonte */
 
-  /* Retícula y espacio (múltiplos de 8) */
-  --spacing: 0.5rem;
-  --container-gutter: clamp(16px, 2.4vw, 44px);
+  --text-display: clamp(2.6rem, 5.6vw, 6.6rem);
+  --text-display--line-height: 0.8;
+  --text-display--letter-spacing: -0.02em;
+  --text-titulo: clamp(2rem, 3.6vw, 4.2rem);
+  --text-titulo--line-height: 0.85;
+  --text-cita: clamp(1.9rem, 3.4vw, 3.4rem);
+  --text-cita--line-height: 1.08;
+  --text-meta: 15px;
+  --text-meta--line-height: 1.32;
+  --text-meta-sm: 13px;
+  --text-meta-xs: 12px;
 
-  /* Movimiento */
+  /* ---- Espacio y retícula (múltiplos de 8) ---- */
+  --spacing: 0.25rem;
+  --spacing-gutter: clamp(16px, 2.4vw, 44px);
+
+  /* ---- Formas ---- */
+  --radius-marco: 10px;   /* imágenes y videos */
+  --radius-pill: 999px;
+  --tape-height: 4px;     /* la cinta de 4 colores (nav y recuadros) */
+
+  /* ---- Movimiento ---- */
   --ease-salida: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-enfoque: cubic-bezier(0.33, 0, 0.2, 1);
+  --duration-enfoque: 1.4s;
+}
+
+/* Fuentes condensadas: Archivo con ancho 72 % para los titulares */
+@utility font-display-cond {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 72%;
+  text-transform: uppercase;
 }

@@ -62,6 +62,18 @@ export default {
   story: {
     title: 'Story',
   },
+  system: {
+    title: "Design system",
+    left: "Design",
+    right: "system",
+    atoms: "Atoms",
+    colors: "Color",
+    type: "Type",
+    sample: "I tell stories by hand.",
+    name: "Your name",
+    send: "Write to me",
+    play: "Play"
+  },
   todo: 'TODO',
   phase1: 'Phase 1 · project base. The design arrives in phases 2 to 4.',
 };

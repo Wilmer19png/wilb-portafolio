@@ -2,13 +2,13 @@
 // { page, lang, t(clave), url(id), alt, hrefs: { es, en } } y devuelve HTML.
 // En la fase 3 cada bloque pasa a ser su organismo (Header, Footer…) con el diseño final.
 import { projects, bySlug, loc } from '../data/projects.js';
-
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+import { esc, Pill, LangToggle, Logo, Tape, RakunEye } from './atoms.js';
+export * from './system.js';
 
 // <head> común: título, descripción y enlaces entre idiomas (hreflang)
 export function head(ctx) {
   const project = ctx.page.project ? bySlug(ctx.page.project) : null;
-  const TITLES = { home: 'home.title', trabajos: 'works.title', sobre: 'about.title', contacto: 'contact.title', historia: 'story.title' };
+  const TITLES = { home: 'home.title', trabajos: 'works.title', sobre: 'about.title', contacto: 'contact.title', historia: 'story.title', sistema: 'system.title' };
   const name = project ? project.title : ctx.t(TITLES[ctx.page.id]);
   const title = ctx.page.id === 'home' ? name : `${name} · ${ctx.t('meta.siteName')}`;
   return `<title>${esc(title)}</title>
@@ -20,29 +20,23 @@ export function head(ctx) {
 
 // Header (organismo). Diseño final en la fase 3.
 export function header(ctx) {
-  const link = (id, key) => {
-    const on = ctx.page.id === id || (id === 'trabajos' && ctx.page.template === 'proyecto');
-    return `<a class="pill${on ? ' is-on' : ''}" href="${ctx.url(id)}"${on ? ' aria-current="page"' : ''}>${esc(ctx.t(key))}</a>`;
-  };
+  const pill = (id, key) => Pill({ href: ctx.url(id), label: ctx.t(key), on: ctx.page.id === id || (id === 'trabajos' && ctx.page.template === 'proyecto') });
   return `<header class="site-header">
-    <nav aria-label="${esc(ctx.t('nav.main'))}">${link('home', 'nav.home')}${link('trabajos', 'nav.works')}</nav>
-    <a class="logo" href="${ctx.url('home')}" aria-label="Wil B">Wil B</a>
-    <nav aria-label="${esc(ctx.t('nav.secondary'))}">${link('sobre', 'nav.about')}${link('contacto', 'nav.contact')}${langToggle(ctx)}</nav>
+    ${Tape()}
+    <div class="site-header__fila">
+      <nav aria-label="${esc(ctx.t('nav.main'))}">${pill('home', 'nav.home')}${pill('trabajos', 'nav.works')}</nav>
+      ${Logo({ href: ctx.url('home'), label: 'Wil B', mode: ctx.page.id === 'home' ? 'loop' : 'intro', color: ctx.page.id === 'home' ? '#ffffff' : '' })}
+      <nav aria-label="${esc(ctx.t('nav.secondary'))}">${pill('sobre', 'nav.about')}${pill('contacto', 'nav.contact')}${langToggle(ctx)}</nav>
+    </div>
   </header>`;
 }
 
-// LangToggle (átomo): enlaza a la misma página en el otro idioma
-export function langToggle(ctx) {
-  const item = (lang) => (lang === ctx.lang
-    ? `<b aria-current="true">${lang.toUpperCase()}</b>`
-    : `<a href="${ctx.hrefs[lang]}" hreflang="${lang}" lang="${lang}" data-lang-switch>${lang.toUpperCase()}</a>`);
-  return `<span class="lang-toggle" role="group" aria-label="${esc(ctx.t('nav.langLabel'))}">${item('es')} / ${item('en')}</span>`;
-}
+export const langToggle = (ctx) => LangToggle({ lang: ctx.lang, hrefs: ctx.hrefs, label: ctx.t('nav.langLabel') });
 
 // Footer (organismo)
 export function footer(ctx) {
   return `<footer class="site-footer">
-    <span>©2026 WILMER BURITICÁ · ${esc(ctx.t('footer.websiteBy'))} <img src="/img/rakun-ojo.svg" alt="RAKÜN" width="22" height="22"></span>
+    <span>©2026 WILMER BURITICÁ <span aria-hidden="true">·</span> <span class="site-footer__by">${esc(ctx.t('footer.websiteBy'))} ${RakunEye()}</span></span>
     <a href="${ctx.url('historia')}">${esc(ctx.t('footer.match'))}</a>
   </footer>`;
 }
