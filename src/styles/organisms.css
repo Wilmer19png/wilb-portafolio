@@ -170,4 +170,17 @@
     -webkit-background-clip: text;
     background-clip: text;
   }
+  /* Aros del PLAY: el fondo (hueso + degradados) recortado solo al borde */
+  .pinta-on .homereel__aro.pinta {
+    -webkit-text-fill-color: initial;
+    border-color: transparent;
+    background-image: linear-gradient(rgb(243 239 230 / .75), rgb(243 239 230 / .75));
+    background-origin: border-box;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) padding-box exclude, linear-gradient(#000 0 0);
+  }
+  .pinta-on .homereel__play:hover .homereel__aro.pinta { border-color: transparent; }
 }

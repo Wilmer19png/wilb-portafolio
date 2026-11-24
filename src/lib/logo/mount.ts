@@ -21,6 +21,8 @@ export interface LogoController {
   /** Salta al comienzo de un ciclo de palabras (al cambiar de proyecto a mano). */
   restartCycle(): void;
   setColor(color: string): void;
+  /** Algo que se dibuja encima del logo en cada cuadro (la pintura del mouse en el Inicio). */
+  setOverlay(fn: ((canvas: HTMLCanvasElement) => void) | null): void;
 }
 
 const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -36,8 +38,9 @@ export function mountLogo(canvas: HTMLCanvasElement): LogoController {
   let raf = 0;
   let keepHolding: () => boolean = () => false;
   const listeners: LogoTick[] = [];
+  let overlay: ((canvas: HTMLCanvasElement) => void) | null = null;
 
-  const paint = () => draw(canvas, t, 'completo', color);
+  const paint = () => { draw(canvas, t, 'completo', color); overlay?.(canvas); };
   const emit = () => listeners.forEach((fn) => fn(t, cycle, holdFrom > 0));
   const nextCycle = (now: number) => { intro = false; holdFrom = 0; start = now; cycle += 1; t = LOOP_FROM; };
 
@@ -74,6 +77,7 @@ export function mountLogo(canvas: HTMLCanvasElement): LogoController {
       if (!raf) raf = requestAnimationFrame(frame);
     },
     setColor(c) { color = c || undefined; paint(); },
+    setOverlay(fn) { overlay = fn; },
   };
 }
 
