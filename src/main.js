@@ -6,13 +6,18 @@ import '@fontsource/space-mono/700.css';
 import { currentLang } from './lib/i18n.js';
 import { mountAll } from './lib/logo/mount';
 import { initUI } from './lib/ui.js';
+import { reveal } from './lib/reveal.js';
 
 mountAll();
 initUI();
+reveal();
 
 // Cada página carga solo lo que usa
 const reel = document.querySelector('[data-homereel]');
-if (reel) import('./lib/home-reel.js').then((m) => m.initHomeReel(reel));
+if (reel) {
+  import('./lib/home-reel.js').then((m) => m.initHomeReel(reel));
+  import('./lib/paint.js').then((m) => m.initPaint(reel));
+}
 const works = document.querySelector('[data-works]');
 if (works) {
   import('./lib/works.js').then((m) => {

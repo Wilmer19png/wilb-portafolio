@@ -18,7 +18,8 @@ export function head(ctx) {
   const tone = TONE_PAGES.includes(ctx.page.id)
     ? `<script>try{if(localStorage.getItem('wilb:tono')==='claro')document.documentElement.dataset.tono='claro'}catch(e){}</script>`
     : '';
-  return `<title>${esc(title)}</title>
+  return `<script>document.documentElement.classList.add('js')</script>
+    <title>${esc(title)}</title>
     <meta name="description" content="${esc(ctx.t('meta.description'))}">
     <link rel="alternate" hreflang="es" href="${ctx.hrefs.es}">
     <link rel="alternate" hreflang="en" href="${ctx.hrefs.en}">
@@ -56,21 +57,21 @@ export function project(ctx) {
     : YouTubeLite({ id: p.youtube, poster: m.poster, title: p.title, playLabel: play });
 
   const clips = (m.clips ?? []).length
-    ? `<section class="proyecto__cuadros" aria-label="${esc(ctx.t('project.frames'))}">${m.clips.map((src) => `
-        <div class="proyecto__cuadro"><video data-src="${src}" muted loop playsinline preload="none" poster="${m.poster}" aria-hidden="true"></video>${Grain()}</div>`).join('')}
+    ? `<section class="proyecto__cuadros" data-reveal aria-label="${esc(ctx.t('project.frames'))}">${m.clips.map((c) => `
+        <div class="proyecto__cuadro"><video data-src="${c.sd}" muted loop playsinline preload="none" poster="${c.poster}" aria-hidden="true"></video>${Grain()}</div>`).join('')}
       </section>`
     : '';
 
   return `<article class="proyecto">
     ${ChapterTitle({ left: p.title, right: ctx.t(`categories.${p.category}`) })}
-    <div class="proyecto__video">${video}</div>
+    <div class="proyecto__video" data-reveal style="--d:.2s">${video}</div>
 
     <div class="proyecto__cuerpo">
-      <div class="proyecto__texto">
+      <div class="proyecto__texto" data-reveal>
         <p class="proyecto__sinopsis">${esc(loc(p.summary, ctx.lang))}</p>
         <span class="todo">${esc(ctx.t('project.todoFirstPerson'))}</span>
       </div>
-      <aside class="proyecto__creditos">
+      <aside class="proyecto__creditos" data-reveal style="--d:.12s">
         ${Tape({ variant: 'marca' })}
         ${Credits({ items: [
           [ctx.t('project.format'), loc(p.format, ctx.lang)],
@@ -83,14 +84,14 @@ export function project(ctx) {
 
     ${clips}
 
-    <section class="proyecto__aprendi">
+    <section class="proyecto__aprendi" data-reveal>
       <h2>${esc(ctx.t('project.learned'))}</h2>
       <span class="todo">${esc(ctx.t('project.todoLearned'))}</span>
     </section>
 
     <p class="proyecto__rakun">${esc(ctx.t('project.production'))} RAKÜN ${RakunEye()}</p>
 
-    <nav class="proyecto__nav" aria-label="${esc(ctx.t('project.more'))}">
+    <nav class="proyecto__nav" data-reveal aria-label="${esc(ctx.t('project.more'))}">
       <a href="${ctx.url(`proyecto:${prev.slug}`)}" rel="prev"><span>← ${esc(ctx.t('project.prev'))}</span><b>${esc(prev.title)}</b></a>
       <a href="${ctx.url(`proyecto:${next.slug}`)}" rel="next"><span>${esc(ctx.t('project.next'))} →</span><b>${esc(next.title)}</b></a>
     </nav>

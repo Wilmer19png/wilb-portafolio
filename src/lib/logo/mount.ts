@@ -1,17 +1,23 @@
 // Arranca cada <canvas data-logo> de la página.
 //   data-mode="intro"  se arma una vez (con estelas) y queda quieto
-//   data-mode="loop"   después de armarse repite el ciclo de palabras BLUR / FOCUS / LIT
+//   data-mode="loop"   después de armarse repite el ciclo de palabras BLUR / FOCUS / LIT,
+//                      con una pausa en el logo cerrado (las 4 barras escalonadas) entre ciclos
 //   data-color="#fff"  todo en un color (sin él, a color)
 // Con «reducir movimiento» se dibuja directo el logo terminado.
 import { draw, LOOP_FROM, FIN, SPEED } from './canvas';
 
-export type LogoTick = (t: number, cycle: number) => void;
+export type LogoTick = (t: number, cycle: number, holding: boolean) => void;
+
+/** Pausa mínima en el logo cerrado entre un ciclo de palabras y el siguiente (ms). */
+export const HOLD_MS = 2600;
 
 export interface LogoController {
   /** Tiempo actual de la coreografía (frames a 30 fps sin tempo). */
   readonly t: number;
   /** Se llama en cada cuadro: el reel del Inicio se sincroniza con esto. */
   onTick(fn: LogoTick): void;
+  /** Mientras devuelva false, el logo se queda cerrado aunque ya pasó la pausa mínima. */
+  holdWhile(fn: () => boolean): void;
   /** Salta al comienzo de un ciclo de palabras (al cambiar de proyecto a mano). */
   restartCycle(): void;
   setColor(color: string): void;
@@ -26,24 +32,29 @@ export function mountLogo(canvas: HTMLCanvasElement): LogoController {
   let cycle = 0;
   let intro = true;
   let start = performance.now();
+  let holdFrom = 0; // > 0 mientras el logo está en pausa, cerrado
   let raf = 0;
+  let keepHolding: () => boolean = () => false;
   const listeners: LogoTick[] = [];
 
   const paint = () => draw(canvas, t, 'completo', color);
+  const emit = () => listeners.forEach((fn) => fn(t, cycle, holdFrom > 0));
+  const nextCycle = (now: number) => { intro = false; holdFrom = 0; start = now; cycle += 1; t = LOOP_FROM; };
 
   const frame = (now: number) => {
-    if (intro) {
-      t = ((now - start) / 1000) * SPEED;
-      if (t >= FIN) {
-        if (!loop) { t = FIN - 0.01; paint(); listeners.forEach((fn) => fn(t, cycle)); raf = 0; return; }
-        intro = false; start = now; cycle += 1; t = LOOP_FROM;
-      }
+    if (holdFrom) {
+      // Pausa en el logo cerrado
+      if (now - holdFrom >= HOLD_MS && !keepHolding()) nextCycle(now);
     } else {
-      t = LOOP_FROM + ((now - start) / 1000) * SPEED;
-      if (t >= FIN) { start = now; cycle += 1; t = LOOP_FROM; }
+      t = (intro ? 0 : LOOP_FROM) + ((now - start) / 1000) * SPEED;
+      if (t >= FIN) {
+        t = FIN - 0.01;
+        if (!loop) { paint(); emit(); raf = 0; return; }
+        holdFrom = now;
+      }
     }
     paint();
-    listeners.forEach((fn) => fn(t, cycle));
+    emit();
     raf = requestAnimationFrame(frame);
   };
 
@@ -56,9 +67,10 @@ export function mountLogo(canvas: HTMLCanvasElement): LogoController {
   return {
     get t() { return t; },
     onTick(fn) { listeners.push(fn); },
+    holdWhile(fn) { keepHolding = fn; },
     restartCycle() {
       if (!loop || reduce()) return;
-      intro = false; start = performance.now(); cycle += 1; t = LOOP_FROM;
+      nextCycle(performance.now());
       if (!raf) raf = requestAnimationFrame(frame);
     },
     setColor(c) { color = c || undefined; paint(); },

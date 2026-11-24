@@ -69,9 +69,9 @@ export function systemPageParts(ctx) {
       ${ficha('FieldLabel', `<div style="width:100%">${FieldLabel({ id: 'ds-campo', label: t('name'), autocomplete: 'off' })}</div>`)}
       ${ficha('SoundToggle', SoundToggle({ labelOn: ctx.t('footer.soundOn'), labelOff: ctx.t('footer.soundOff') }), 'clic: se mueve')}
       ${ficha('Signature', Signature({ websiteBy: ctx.t('footer.websiteBy') }))}
-      ${ficha('WorkCard', `<div style="width:100%">${WorkCard({ href: '#', line: p.line, poster: '/media/posters/amor-de-calle.jpg', height: '200px' })}</div>`, 'pasa el mouse: se enfoca')}
+      ${ficha('WorkCard', `<div style="width:100%">${WorkCard({ href: '#', line: p.line, poster: '/media/trabajos/amor-de-calle/1.jpg', height: '200px' })}</div>`, 'pasa el mouse: se enfoca')}
       ${ficha('Credits', Credits({ items: [[ctx.t('project.format'), ctx.t('categories.videoclip')], [ctx.t('project.client'), 'Apostol'], [ctx.t('project.year'), '2026']] }))}
-      ${ficha('YouTubeLite', `<div style="width:100%">${YouTubeLite({ id: '4RtfGuRQXYw', poster: '/media/posters/amor-de-calle.jpg', title: 'Amor de calle', playLabel: ctx.t('project.play') })}</div>`, 'carga YouTube solo al hacer clic')}
+      ${ficha('YouTubeLite', `<div style="width:100%">${YouTubeLite({ id: '4RtfGuRQXYw', poster: '/media/trabajos/amor-de-calle/1.jpg', title: 'Amor de calle', playLabel: ctx.t('project.play') })}</div>`, 'carga YouTube solo al hacer clic')}
     </div>
   </section>
 

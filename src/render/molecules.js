@@ -10,7 +10,7 @@ export function NavGroup({ label, items, extra = '', className = '' }) {
 /** ChapterTitle: el titular partido a los dos lados («Trabajos ····· Vista general»). */
 export function ChapterTitle({ left, right, tag = 'h1', label = '' }) {
   const aria = label ? ` aria-label="${esc(label)}"` : '';
-  return `<${tag} class="chaptertitle"${aria}><span>${esc(left)}</span><span>${esc(right)}</span></${tag}>`;
+  return `<${tag} class="chaptertitle"${aria}><span data-reveal>${esc(left)}</span><span data-reveal style="--d:.12s">${esc(right)}</span></${tag}>`;
 }
 
 /** FieldLabel: etiqueta + Input del formulario. */
@@ -20,14 +20,14 @@ export function FieldLabel({ id, label, ...input }) {
 
 /** WorkCard: recuadro de un trabajo. Cinta de 4 colores encima, imagen quieta y desenfocada;
  *  al pasar el mouse se enfoca y corre el video (data-video). Pie en una sola línea. */
-export function WorkCard({ href, line, poster = '', posters = [], video = '', category = '', width = '100%', height = '30vw', eager = false }) {
+export function WorkCard({ href, line, poster = '', posters = [], video = '', category = '', width = '100%', height = '30vw', eager = false, delay = 0 }) {
   const load = eager ? '' : ' loading="lazy"';
   let img = '<span class="workcard__vacio" aria-hidden="true"></span>';
   if (posters.length) img = `<span class="workcard__reels">${posters.map((p) => `<img src="${p}" alt="" decoding="async">`).join('')}</span>`;
   else if (poster) img = `<img src="${poster}" alt=""${load} decoding="async">`;
   return `<a class="workcard" href="${href}" style="--ancho:${width};--alto:${height}"${category ? ` data-cat="${category}"` : ''}${video ? ` data-video="${video}"` : ''}>
-      <span class="workcard__cuadro">${Tape({ variant: 'marca' })}<span class="workcard__marco${posters.length ? ' workcard__marco--reels' : ''}">${img}${Grain()}</span></span>
-      <span class="workcard__pie">${esc(line)}</span>
+      <span class="workcard__cuadro" data-reveal style="--d:${delay}s">${Tape({ variant: 'marca' })}<span class="workcard__marco${posters.length ? ' workcard__marco--reels' : ''}">${img}${Grain()}</span></span>
+      <span class="workcard__pie" data-reveal style="--d:${(delay + 0.15).toFixed(2)}s">${esc(line)}</span>
     </a>`;
 }
 

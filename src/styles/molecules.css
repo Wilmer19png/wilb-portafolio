@@ -24,7 +24,7 @@
   .workcard__marco img, .workcard__marco video, .workcard__vacio { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .workcard__marco img, .workcard__vacio {
     filter: saturate(.5) brightness(.8) blur(3px); transform: scale(1.04);
-    transition: filter var(--duration-enfoque) var(--ease-enfoque), transform 1.6s var(--ease-salida);
+    transition: filter .6s var(--ease-enfoque), transform .9s var(--ease-salida);
   }
   .workcard:hover .workcard__marco img, .workcard:focus-visible .workcard__marco img,
   .workcard:hover .workcard__vacio, .workcard:focus-visible .workcard__vacio { filter: none; transform: scale(1.01); }
@@ -65,12 +65,12 @@
   .workcard__reels { position: absolute; inset: 0; display: flex; gap: 12px; }
   .workcard__reels img {
     position: relative; flex: 1; min-width: 0; height: 100%; object-fit: cover; border-radius: var(--radius-marco);
-    filter: saturate(.5) brightness(.8) blur(3px); transition: filter var(--duration-enfoque) var(--ease-enfoque);
+    filter: saturate(.5) brightness(.8) blur(3px); transition: filter .6s var(--ease-enfoque);
   }
   .workcard__reels img:first-child { border-top-left-radius: 0; }
   .workcard__marco .workcard__reels img { transform: none; }
   .workcard:hover .workcard__reels img, .workcard:focus-visible .workcard__reels img { filter: none; }
-  .workcard__marco video { opacity: 0; transition: opacity .9s ease-out; }
+  .workcard__marco video { opacity: 0; transition: opacity .35s ease-out; }
   .workcard__marco video.is-on { opacity: 1; }
 
   /* Credits: créditos del proyecto en mono */

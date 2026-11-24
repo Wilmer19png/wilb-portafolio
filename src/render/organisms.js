@@ -103,11 +103,11 @@ const arrow = (d) => `<svg viewBox="0 0 16 16" width="12" height="12" fill="none
 /** HomeReel: el reel a sangre del Inicio. Cada proyecto dura un ciclo de palabras del logo:
  *  entra desenfocado (BLUR), se enfoca (FOCUS) y sube la luz (LIT). Sin reels verticales. */
 export function HomeReel(ctx) {
-  const items = projects.filter((p) => !mediaFor(p.slug).vertical && mediaFor(p.slug).reel);
+  const items = projects.filter((p) => !mediaFor(p.slug).vertical && mediaFor(p.slug).clips?.length);
   const first = items[0];
   return `<section class="homereel" data-homereel aria-label="${esc(ctx.t('home.reel'))}">
     <div class="homereel__capas" aria-hidden="true">
-      ${items.map((p, i) => `<div class="homereel__capa${i === 0 ? ' is-on' : ''}" data-video="${mediaFor(p.slug).reel}" data-href="${ctx.url(`proyecto:${p.slug}`)}" data-title="${esc(reelTitle(p, ctx))}" data-name="${esc(p.title)}">
+      ${items.map((p, i) => `<div class="homereel__capa${i === 0 ? ' is-on' : ''}" data-clips='${JSON.stringify(mediaFor(p.slug).clips.map(({ hd, sd, dur }) => ({ hd, sd, dur })))}' data-href="${ctx.url(`proyecto:${p.slug}`)}" data-title="${esc(reelTitle(p, ctx))}" data-name="${esc(p.title)}">
         <img src="${mediaFor(p.slug).poster}" alt="" decoding="async"${i === 0 ? ' fetchpriority="high"' : ' loading="lazy"'}>
       </div>`).join('')}
       ${Grain()}
@@ -118,7 +118,7 @@ export function HomeReel(ctx) {
       ${ChapterTitle({ left: ctx.t('home.first'), right: ctx.t('home.last'), label: `${ctx.t('home.first')} ${ctx.t('home.last')}` })}
 
       <div class="homereel__medio">
-        <div class="homereel__bio">
+        <div class="homereel__bio" data-reveal style="--d:.25s">
           <b>${esc(ctx.t('home.role'))}</b>
           <div>
             <p>${esc(ctx.t('home.intro'))}</p>
@@ -126,12 +126,12 @@ export function HomeReel(ctx) {
           </div>
         </div>
 
-        <a class="homereel__play" href="${ctx.url(`proyecto:${first.slug}`)}" data-play aria-label="${esc(ctx.t('home.playLabel'))}: ${esc(first.title)}" data-label="${esc(ctx.t('home.playLabel'))}">
+        <a class="homereel__play" data-reveal style="--d:.4s" href="${ctx.url(`proyecto:${first.slug}`)}" data-play aria-label="${esc(ctx.t('home.playLabel'))}: ${esc(first.title)}" data-label="${esc(ctx.t('home.playLabel'))}">
           <span class="homereel__aro homereel__aro--3"></span><span class="homereel__aro homereel__aro--2"></span><span class="homereel__aro homereel__aro--1"></span>
           <span class="homereel__play-txt">${esc(ctx.t('home.play'))}</span>
         </a>
 
-        <div class="homereel__control">
+        <div class="homereel__control" data-reveal style="--d:.55s">
           <span data-folio data-total="${items.length}">${Folio({ n: 1, total: items.length, title: reelTitle(first, ctx) })}</span>
           <div class="homereel__barra">
             <div class="homereel__progreso" aria-hidden="true"><span data-progress></span></div>
@@ -143,7 +143,7 @@ export function HomeReel(ctx) {
         </div>
       </div>
 
-      ${Footer(ctx)}
+      <div data-reveal style="--d:.7s">${Footer(ctx)}</div>
     </div>
   </section>`;
 }
@@ -158,19 +158,19 @@ const LAYOUT = [
 
 /** WorksOverview: todos los trabajos en tamaños mixtos. Quietos y desenfocados hasta pasar el mouse. */
 export function WorksOverview(ctx) {
-  const card = (p, width, height, i) => {
+  const card = (p, width, height, i, j = 0) => {
     const m = mediaFor(p.slug);
     return WorkCard({
       href: ctx.url(`proyecto:${p.slug}`), line: workLine(p, ctx), category: p.category,
-      poster: m.poster, posters: (m.reels ?? []).map((r) => r.poster), video: m.preview ?? '',
-      width, height, eager: i === 0,
+      poster: m.preview?.poster ?? m.poster, posters: (m.reels ?? []).map((r) => r.poster), video: m.preview?.sd ?? '',
+      width, height, eager: i === 0, delay: j * 0.14,
     });
   };
   const used = new Set(LAYOUT.flatMap((r) => r.items.map(([i]) => i)));
   const extra = projects.map((p, i) => i).filter((i) => !used.has(i)).map((i) => ({ pad: '17%', items: [[i, '100%', '30vw']] }));
   return `<div class="worksoverview" data-works>
     ${[...LAYOUT, ...extra].map((row) => `<div class="worksoverview__fila" style="--pad:${row.pad}">
-      ${row.items.filter(([i]) => projects[i]).map(([i, w, h]) => card(projects[i], w, h, i)).join('')}
+      ${row.items.filter(([i]) => projects[i]).map(([i, w, h], j) => card(projects[i], w, h, i, j)).join('')}
     </div>`).join('')}
     <p class="worksoverview__vacio" data-vacio hidden>${esc(ctx.t('works.empty'))}<br><span class="todo">${esc(ctx.t('works.todoEditorial'))}</span></p>
   </div>`;

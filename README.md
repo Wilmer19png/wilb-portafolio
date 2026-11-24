@@ -86,11 +86,20 @@ Los nombres son los mismos en Figma y en el código (brief §13).
 
 ## Videos e imágenes
 
-Todo está en un solo manifiesto: `src/data/media.js` (brief §9.5). Los adelantos mudos ya están comprimidos y publicados en el almacenamiento de RAKÜN (Supabase); las portadas están en `public/media/posters`. Los proyectos completos se ven en YouTube, que carga solo al hacer clic.
+Todo está en un solo manifiesto: `src/data/media.js` (brief §9.5). Cada proyecto tiene 3 fragmentos mudos en `public/media/trabajos/<proyecto>/`:
 
-- **Inicio:** cada proyecto dura un ciclo del logo (BLUR → FOCUS → LIT). Solo se descargan el video actual y el siguiente. Los reels verticales no entran en el Inicio.
-- **Trabajos:** quietos y desenfocados; al pasar el mouse se enfocan y corre el adelanto (en celular, el que está a la vista). Filtros con `?c=categoria` en la dirección.
-- Con «reducir movimiento» o ahorro de datos se quedan las portadas, sin video.
+| Archivo | Uso |
+|---|---|
+| `<n>-1080.mp4` | Inicio en computador |
+| `<n>-720.mp4` | Trabajos, página de proyecto y celular |
+| `<n>.jpg` | portada (un cuadro del mismo clip) |
+
+Se comprimieron con ffmpeg (H.264, `-crf 27/28`, `-movflags +faststart` para que empiecen sin bajar el archivo completo). Los proyectos completos se ven en YouTube, que carga solo al hacer clic.
+
+- **Inicio:** cada proyecto dura un ciclo del logo (BLUR → FOCUS → LIT) más una pausa con el logo cerrado. Sus fragmentos se encadenan sin repetirse y al final entra el siguiente proyecto. Los reels verticales no entran en el Inicio. Por donde pasa el mouse, las letras se pintan con los colores de la marca.
+- **Trabajos:** quietos y desenfocados; el adelanto se precarga cuando el recuadro se acerca y corre al pasar el mouse (en celular, el que está a la vista). Filtros con `?c=categoria` en la dirección.
+- **Entrada:** recuadros y textos suben desde abajo y se enfocan al aparecer (`src/lib/reveal.js`).
+- Con «reducir movimiento» o ahorro de datos se quedan las portadas, sin video ni animaciones.
 
 ## Logo animado
 

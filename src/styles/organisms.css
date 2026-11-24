@@ -161,3 +161,13 @@
     .allworkspill { bottom: 20px; }
   }
 }
+
+/* Inicio: letras que se pintan al pasar el mouse (src/lib/paint.js) */
+@layer components {
+  .pinta-on .pinta {
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(var(--color-hueso), var(--color-hueso));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}

@@ -1,12 +1,12 @@
 // Trabajos: el adelanto corre al pasar el mouse (o al estar a la vista en pantallas táctiles)
 // y la píldora de abajo filtra por categoría.
+import { replay } from './reveal.js';
 
 const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const saveData = () => navigator.connection?.saveData === true;
 
 /* ---------- adelanto en video ---------- */
-function playPreview(card) {
-  if (reduce() || saveData()) return;
+function ensureVideo(card) {
   const marco = card.querySelector('.workcard__marco');
   let v = marco.querySelector('video');
   if (!v) {
@@ -17,7 +17,12 @@ function playPreview(card) {
     v.src = card.dataset.video;
     marco.insertBefore(v, marco.querySelector('.grain'));
   }
-  v.play().catch(() => {});
+  return v;
+}
+
+function playPreview(card) {
+  if (reduce() || saveData()) return;
+  ensureVideo(card).play().catch(() => {});
 }
 
 function stopPreview(card) {
@@ -32,6 +37,13 @@ export function initWorkCards(root = document) {
   if (!cards.length) return;
   const hover = matchMedia('(hover: hover)').matches;
   if (hover) {
+    // Precargar el adelanto cuando el recuadro se acerca: al pasar el mouse arranca de una
+    if (!reduce() && !saveData()) {
+      const pre = new IntersectionObserver((entries) => entries.forEach((e) => {
+        if (e.isIntersecting) { ensureVideo(e.target); pre.unobserve(e.target); }
+      }), { rootMargin: '400px 0px' });
+      cards.forEach((c) => pre.observe(c));
+    }
     cards.forEach((c) => {
       c.addEventListener('mouseenter', () => playPreview(c));
       c.addEventListener('mouseleave', () => stopPreview(c));
@@ -69,6 +81,7 @@ export function initFilters(pill, list) {
       if (show) visibles += 1;
     });
     list.classList.toggle('is-filtrado', cat !== 'todos');
+    replay([...list.querySelectorAll('.workcard:not([hidden]) [data-reveal]')]);
     vacio.hidden = visibles > 0;
     pill.querySelectorAll('[data-filtro]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filtro === cat)));
     nombre.textContent = pill.querySelector(`[data-filtro="${cat}"]`).dataset.nombre;

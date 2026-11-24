@@ -54,11 +54,23 @@
   ::selection { background: var(--color-amarillo); color: var(--color-noche); }
 }
 
-/* Provisional hasta la fase 4 (Inicio, Trabajos y Proyecto con su maquetación final) */
 @layer components {
   .note { font-family: var(--font-mono); font-size: 13px; color: var(--tono-muted); }
   /* Textos que faltan: el brief pide no inventarlos y dejar el TODO a la vista */
   .todo { font-family: var(--font-mono); font-size: var(--text-meta-xs); color: var(--tono-todo); text-transform: none; }
+}
+
+/* Entrada: sube desde abajo y se enfoca (src/lib/reveal.js). Solo si hay JavaScript. */
+@layer utilities {
+  .js [data-reveal] {
+    opacity: 0; transform: translateY(56px); filter: blur(14px);
+    transition: opacity .9s var(--ease-salida), transform 1.2s var(--ease-salida), filter 1.1s var(--ease-enfoque);
+    transition-delay: var(--d, 0s);
+  }
+  .js [data-reveal].is-visible { opacity: 1; transform: none; filter: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .js [data-reveal] { opacity: 1; transform: none; filter: none; transition: none; }
+  }
 }
 
 /* Página del sistema de diseño */

@@ -1,59 +1,28 @@
 // Manifiesto de medios (brief §9.5): cambiar un video o una portada es cambiar una línea.
-// Los adelantos mudos ya están comprimidos y publicados en el almacenamiento de RAKÜN (Supabase),
-// el mismo que usa la web de RAKÜN. Las portadas viven en public/media/posters.
-const RAKUN = 'https://ajbydapzrtfagmcpglte.supabase.co/storage/v1/object/public/trabajo';
+// Fragmentos mudos de cada proyecto en public/media/trabajos/<slug>/:
+//   <n>-1080.mp4 (Inicio en computador) · <n>-720.mp4 (Trabajos, proyecto y celular) · <n>.jpg (portada = un cuadro del clip)
+// Comprimidos con ffmpeg (H.264, -movflags +faststart para que empiecen sin bajar el archivo completo).
+// Original: los adelantos de la web de RAKÜN.
+
+const clip = (slug, n, dur) => ({
+  hd: `/media/trabajos/${slug}/${n}-1080.mp4`,
+  sd: `/media/trabajos/${slug}/${n}-720.mp4`,
+  poster: `/media/trabajos/${slug}/${n}.jpg`,
+  dur, // segundos
+});
+
+// El orden de los clips es el orden en que se encadenan en el Inicio (sin repetir)
+const proyecto = (slug, durs, preview) => {
+  const clips = durs.map((d, i) => clip(slug, i + 1, d));
+  return { poster: clips[0].poster, clips, preview: clips[preview - 1] };
+};
 
 export const media = {
-  'amor-de-calle': {
-    poster: '/media/posters/amor-de-calle.jpg',
-    reel: `${RAKUN}/amor-de-calle/mv7e8exh-Portada-Amor-De-Calle.mp4`,            // Inicio
-    preview: `${RAKUN}/amor-de-calle/mv7gzui2-Videoportada2-Amor-De-Calle.mp4`,    // Trabajos (al pasar el mouse)
-    clips: [
-      `${RAKUN}/amor-de-calle/mv7e8exh-Portada-Amor-De-Calle.mp4`,
-      `${RAKUN}/amor-de-calle/mv7gzsow-Portada3-Amor-De-Calle.mp4`,
-      `${RAKUN}/amor-de-calle/mv7gzui2-Videoportada2-Amor-De-Calle.mp4`,
-    ],
-  },
-  'donde-la-musica-muere': {
-    poster: '/media/posters/donde-la-musica-muere.jpg',
-    reel: `${RAKUN}/donde-la-musica-muere/mv7gvbx9-Portada-Donde-Muere-La-Musica-1.mp4`,
-    preview: `${RAKUN}/donde-la-musica-muere/mv7gvjl8-Portada-Donden-Muere-La-Musica-2.mp4`,
-    // El tercer adelanto pesa 33 MB sin comprimir: TODO comprimirlo y agregarlo
-    clips: [
-      `${RAKUN}/donde-la-musica-muere/mv7gvbx9-Portada-Donde-Muere-La-Musica-1.mp4`,
-      `${RAKUN}/donde-la-musica-muere/mv7gvjl8-Portada-Donden-Muere-La-Musica-2.mp4`,
-    ],
-  },
-  'el-pregon-de-la-plaza': {
-    poster: '/media/posters/el-pregon-de-la-plaza.jpg',
-    reel: `${RAKUN}/el-pregon-de-la-plaza/mv7h89jw-Pregon-De-La-Plaza-Protada-1.mp4`,
-    preview: `${RAKUN}/el-pregon-de-la-plaza/mv7h8dkp-Portada-2-El-Pregon.mp4`,
-    clips: [
-      `${RAKUN}/el-pregon-de-la-plaza/mv7h89jw-Pregon-De-La-Plaza-Protada-1.mp4`,
-      `${RAKUN}/el-pregon-de-la-plaza/mv7h8bve-Portada-3-El-Pregon-De-La-Plaza.mp4`,
-      `${RAKUN}/el-pregon-de-la-plaza/mv7h8dkp-Portada-2-El-Pregon.mp4`,
-    ],
-  },
-  'otro-amanecer': {
-    poster: '/media/posters/otro-amanecer.jpg',
-    reel: `${RAKUN}/otro-amanecer/mv7gz47l-Portada-Otro-Amanecer.mp4`,
-    preview: `${RAKUN}/otro-amanecer/mv7gz8kb-Portada3-Otroamanecer.mp4`,
-    clips: [
-      `${RAKUN}/otro-amanecer/mv7gz47l-Portada-Otro-Amanecer.mp4`,
-      `${RAKUN}/otro-amanecer/mv7gz14c-Portada-2-Otro-Amanecer.mp4`,
-      `${RAKUN}/otro-amanecer/mv7gz8kb-Portada3-Otroamanecer.mp4`,
-    ],
-  },
-  'nos-fui-pues-mijo': {
-    poster: '/media/posters/nos-fui-pues-mijo.jpg',
-    reel: `${RAKUN}/nos-fui-pues-mijo/mv7h1ayc-Portada1-Nosfui.mp4`,
-    preview: `${RAKUN}/nos-fui-pues-mijo/mv7h1gpl-Portada-2-Nosfui.mp4`,
-    clips: [
-      `${RAKUN}/nos-fui-pues-mijo/mv7h1ayc-Portada1-Nosfui.mp4`,
-      `${RAKUN}/nos-fui-pues-mijo/mv7h1em2-Portada3-Nosfuipues.mp4`,
-      `${RAKUN}/nos-fui-pues-mijo/mv7h1gpl-Portada-2-Nosfui.mp4`,
-    ],
-  },
+  'amor-de-calle': proyecto('amor-de-calle', [15.0, 5.4, 9.6], 3),
+  'donde-la-musica-muere': proyecto('donde-la-musica-muere', [26.5, 9.5, 12.7], 3),
+  'el-pregon-de-la-plaza': proyecto('el-pregon-de-la-plaza', [12.1, 6.5, 7.6], 3),
+  'otro-amanecer': proyecto('otro-amanecer', [11.9, 3.4, 5.9], 3),
+  'nos-fui-pues-mijo': proyecto('nos-fui-pues-mijo', [10.7, 19.0, 18.4], 3),
   // Reels verticales: van en Trabajos y en su página, pero no en el reel del Inicio (pedido de Wilmer)
   'doc-mariana-hoyos': {
     vertical: true,
