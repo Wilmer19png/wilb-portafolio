@@ -71,11 +71,17 @@ src/
 
 ## Atomic Design
 
-Los átomos están en `src/render/atoms.js` (HTML) y `src/styles/atoms.css` (estilos, misma clase que el nombre). La página `/sistema/` los muestra todos junto a los tokens.
+Cada nivel tiene su archivo de HTML en `src/render/` y su hoja de estilos en `src/styles/`, con la clase igual al nombre (`Pill` → `.pill`). La página `/sistema/` los muestra todos junto a los tokens.
 
-Los nombres son los mismos en Figma y en el código (brief §13): átomos (`Pill`, `LangToggle`,
-`Logo`…), moléculas (`WorkCard`, `NavGroup`…), organismos (`Header`, `HomeReel`, `WorksOverview`,
-`Footer`…) y plantillas (`HomeTemplate`, `WorksTemplate`, `ProjectTemplate`, `StoryTemplate`).
+| Nivel | Archivos | Piezas |
+|---|---|---|
+| Átomos | `atoms.js` · `atoms.css` | `Pill`, `LangToggle`, `Logo`, `Tape`, `ButtonPrimary`, `Input`, `Tag`, `Folio`, `LightSwitch`, `RakunEye`, `ToneToggle`, `Grain` |
+| Moléculas | `molecules.js` · `molecules.css` | `NavGroup`, `ChapterTitle`, `FieldLabel`, `WorkCard`, `SoundToggle`, `Credits` |
+| Organismos | `organisms.js` · `organisms.css` | `Header`, `MenuMobile`, `Footer` (más en las fases siguientes: `HomeReel`, `WorksOverview`…) |
+
+El comportamiento (menú del celular, tono oscuro / claro, sonido) está en `src/lib/ui.js`. El tono usa variables `--tono-*` y `data-tono="claro"` en `<html>`; solo Sobre mí y Contacto lo pueden cambiar y se recuerda entre visitas.
+
+Los nombres son los mismos en Figma y en el código (brief §13).
 
 ## Logo animado
 
@@ -90,7 +96,7 @@ Archivo (titulares, ancho 72 %), Space Grotesk y Space Mono, todas con licencia 
 - [x] 0. Boceto en el lienzo de diseño
 - [x] 1. Proyecto base, estructura e idiomas
 - [x] 2. Tokens, tipografías y átomos (ver `/sistema/`)
-- [ ] 3. Moléculas y organismos base (Header con el logo animado, Footer…)
+- [x] 3. Moléculas y organismos base (Header con el logo animado, menú del celular, Footer, tono claro / oscuro)
 - [ ] 4. Inicio + Trabajos + Proyecto
 - [ ] 5–11. Historia, piezas editoriales, juego, contacto, proceso
 - [ ] 12. Sonido y audiodescripción

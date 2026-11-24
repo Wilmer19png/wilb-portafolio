@@ -1,0 +1,40 @@
+/* ORGANISMOS: estilos de src/render/organisms.js. */
+@layer components {
+  /* Header */
+  .header { position: relative; z-index: 10; }
+  .header--sobre { position: absolute; top: 0; left: 0; right: 0; }
+  .header__fila { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding: 10px var(--spacing-gutter); }
+  .header__lado--der { justify-content: flex-end; }
+  .header__menu { display: none; }
+
+  /* MenuMobile */
+  .menumobile {
+    position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column;
+    background-color: var(--tono-bg); color: var(--tono-fg);
+    background-image: url('/img/grano-papel.svg'); background-size: 600px 600px; background-blend-mode: overlay;
+    animation: menu-entra .35s var(--ease-salida);
+  }
+  .menumobile[hidden] { display: none; }
+  .menumobile__top { display: flex; justify-content: space-between; align-items: center; padding: 10px var(--spacing-gutter); min-height: 70px; box-sizing: border-box; }
+  .menumobile__links { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 var(--spacing-gutter); }
+  .menumobile__links a {
+    text-decoration: none; font-family: var(--font-display); font-weight: 800; font-stretch: 72%; text-transform: uppercase;
+    font-size: clamp(3rem, 15vw, 6rem); line-height: .9; letter-spacing: -.02em;
+  }
+  .menumobile__links a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 4px; text-underline-offset: .12em; }
+  .menumobile__pie { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 24px var(--spacing-gutter) 36px; }
+  @keyframes menu-entra { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .menumobile { animation: none; } }
+
+  /* Footer */
+  .footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 28px var(--spacing-gutter) 36px; font-family: var(--font-mono); font-size: var(--text-meta); }
+  .footer__izq { display: flex; align-items: center; gap: 16px; }
+  .footer__fosforo { text-decoration: none; border-bottom: 1px dashed currentColor; }
+
+  @media (max-width: 900px) {
+    .header__fila { grid-template-columns: 1fr auto; }
+    .header__lado { display: none; }
+    .header__menu { display: inline-flex; }
+    .header .logo { width: min(260px, 58vw); height: 40px; }
+  }
+}

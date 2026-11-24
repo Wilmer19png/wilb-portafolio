@@ -5,8 +5,10 @@ import '@fontsource/space-mono/400.css';
 import '@fontsource/space-mono/700.css';
 import { currentLang } from './lib/i18n.js';
 import { mountAll } from './lib/logo/mount';
+import { initUI } from './lib/ui.js';
 
 mountAll();
+initUI();
 
 const KEY = 'wilb:lang';
 const lang = currentLang();

@@ -1,51 +1,52 @@
 // Bloques HTML que se repiten entre páginas. Cada función recibe el contexto de la página:
 // { page, lang, t(clave), url(id), alt, hrefs: { es, en } } y devuelve HTML.
-// En la fase 3 cada bloque pasa a ser su organismo (Header, Footer…) con el diseño final.
+// Las plantillas los llaman con <!--@nombre--> (plugins/i18n-pages.js).
 import { projects, bySlug, loc } from '../data/projects.js';
-import { esc, Pill, LangToggle, Logo, Tape, RakunEye } from './atoms.js';
+import { esc } from './atoms.js';
+import { ChapterTitle, WorkCard } from './molecules.js';
+import { Header, Footer, TONE_PAGES } from './organisms.js';
 export * from './system.js';
 
-// <head> común: título, descripción y enlaces entre idiomas (hreflang)
+// <head> común: título, descripción, enlaces entre idiomas (hreflang) y el tono guardado
 export function head(ctx) {
   const project = ctx.page.project ? bySlug(ctx.page.project) : null;
   const TITLES = { home: 'home.title', trabajos: 'works.title', sobre: 'about.title', contacto: 'contact.title', historia: 'story.title', sistema: 'system.title' };
   const name = project ? project.title : ctx.t(TITLES[ctx.page.id]);
   const title = ctx.page.id === 'home' ? name : `${name} · ${ctx.t('meta.siteName')}`;
+  // El tono claro se aplica antes de pintar para que no parpadee
+  const tone = TONE_PAGES.includes(ctx.page.id)
+    ? `<script>try{if(localStorage.getItem('wilb:tono')==='claro')document.documentElement.dataset.tono='claro'}catch(e){}</script>`
+    : '';
   return `<title>${esc(title)}</title>
     <meta name="description" content="${esc(ctx.t('meta.description'))}">
     <link rel="alternate" hreflang="es" href="${ctx.hrefs.es}">
     <link rel="alternate" hreflang="en" href="${ctx.hrefs.en}">
-    <link rel="alternate" hreflang="x-default" href="${ctx.hrefs.es}">`;
+    <link rel="alternate" hreflang="x-default" href="${ctx.hrefs.es}">
+    ${tone}`;
 }
 
-// Header (organismo). Diseño final en la fase 3.
-export function header(ctx) {
-  const pill = (id, key) => Pill({ href: ctx.url(id), label: ctx.t(key), on: ctx.page.id === id || (id === 'trabajos' && ctx.page.template === 'proyecto') });
-  return `<header class="site-header">
-    ${Tape()}
-    <div class="site-header__fila">
-      <nav aria-label="${esc(ctx.t('nav.main'))}">${pill('home', 'nav.home')}${pill('trabajos', 'nav.works')}</nav>
-      ${Logo({ href: ctx.url('home'), label: 'Wil B', mode: ctx.page.id === 'home' ? 'loop' : 'intro', color: ctx.page.id === 'home' ? '#ffffff' : '' })}
-      <nav aria-label="${esc(ctx.t('nav.secondary'))}">${pill('sobre', 'nav.about')}${pill('contacto', 'nav.contact')}${langToggle(ctx)}</nav>
-    </div>
-  </header>`;
+export const header = Header;
+export const footer = Footer;
+
+// Titular partido de cada página: <!--@title--> usa las claves <seccion>.left / .right
+export function title(ctx) {
+  const KEYS = { home: 'home', trabajos: 'works', sobre: 'about', contacto: 'contact', sistema: 'system' };
+  const k = KEYS[ctx.page.id];
+  if (ctx.page.id === 'home') return ChapterTitle({ left: ctx.t('home.first'), right: ctx.t('home.last'), label: `${ctx.t('home.first')} ${ctx.t('home.last')}` });
+  return ChapterTitle({ left: ctx.t(`${k}.left`), right: ctx.t(`${k}.right`) });
 }
 
-export const langToggle = (ctx) => LangToggle({ lang: ctx.lang, hrefs: ctx.hrefs, label: ctx.t('nav.langLabel') });
-
-// Footer (organismo)
-export function footer(ctx) {
-  return `<footer class="site-footer">
-    <span>©2026 WILMER BURITICÁ <span aria-hidden="true">·</span> <span class="site-footer__by">${esc(ctx.t('footer.websiteBy'))} ${RakunEye()}</span></span>
-    <a href="${ctx.url('historia')}">${esc(ctx.t('footer.match'))}</a>
-  </footer>`;
+// Pie de un trabajo en una sola línea: nombre · género · formato
+export function workLine(p, ctx) {
+  const cat = ctx.t(`categories.${p.category}`);
+  const format = loc(p.format, ctx.lang);
+  return [p.title, cat, format !== cat ? format : ''].filter(Boolean).join(' · ');
 }
 
-// Lista de trabajos (provisional: la maquetación editorial llega en la fase 4)
+// Lista de trabajos (provisional: la maquetación editorial y los videos llegan en la fase 4)
 export function worksList(ctx) {
-  return `<ul class="works-list">${projects.map((p) => `
-    <li><a href="${ctx.url(`proyecto:${p.slug}`)}">${esc(p.title)} · ${esc(ctx.t(`categories.${p.category}`))}${loc(p.format, ctx.lang) !== ctx.t(`categories.${p.category}`) ? ` · ${esc(loc(p.format, ctx.lang))}` : ''}</a></li>`).join('')}
-  </ul>`;
+  return `<div class="works-grid">${projects.map((p) => WorkCard({ href: ctx.url(`proyecto:${p.slug}`), line: workLine(p, ctx), height: '24vw' })).join('')}
+  </div>`;
 }
 
 // Cuerpo de la página de un proyecto
@@ -55,7 +56,7 @@ export function project(ctx) {
   const prev = projects[(i - 1 + projects.length) % projects.length];
   const next = projects[(i + 1) % projects.length];
   return `<article class="project">
-    <h1>${esc(p.title)}</h1>
+    ${ChapterTitle({ left: p.title, right: ctx.t(`categories.${p.category}`) })}
     <p>${esc(loc(p.summary, ctx.lang))}</p>
     <dl>
       <dt>${esc(ctx.t('project.client'))}</dt><dd>${esc(loc(p.client, ctx.lang))}</dd>

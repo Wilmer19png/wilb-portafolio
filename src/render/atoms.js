@@ -6,9 +6,10 @@ export const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '
 
 const COLORES = ['azul', 'rojo', 'naranja', 'amarillo'];
 
-/** Pill: enlace en píldora del menú. */
-export function Pill({ href, label, on = false }) {
-  return `<a class="pill${on ? ' is-on' : ''}" href="${href}"${on ? ' aria-current="page"' : ''}>${esc(label)}</a>`;
+/** Pill: enlace en píldora del menú (o botón, si no lleva href). */
+export function Pill({ href = '', label, on = false, attrs = '' }) {
+  if (!href) return `<button class="pill" type="button" ${attrs}>${esc(label)}</button>`;
+  return `<a class="pill${on ? ' is-on' : ''}" href="${href}"${on ? ' aria-current="page"' : ''} ${attrs}>${esc(label)}</a>`;
 }
 
 /** LangToggle: ES / EN, enlaza a la misma página en el otro idioma. */
@@ -66,6 +67,11 @@ export function LightSwitch({ href, label }) {
 /** RakunEye: el ojo de RAKÜN en monocromático (toma el color del texto). */
 export function RakunEye({ label = 'RAKÜN' } = {}) {
   return `<svg class="rakuneye" viewBox="0 0 212 140" role="img" aria-label="${esc(label)}"><path fill="currentColor" fill-rule="evenodd" d="M10 5L100 4C152 4 182 34 204 134L8 14Q2 9 10 5ZM36 12L100 12C146 12 174 36 194 123.83L32 24.69Q26 16 36 12ZM83.31 56.09A40 40 0 1 1 151.52 97.83Z"/></svg>`;
+}
+
+/** ToneToggle: cambia la página entre oscuro y claro (Sobre mí y Contacto). */
+export function ToneToggle({ label, dark, light }) {
+  return `<button class="tonetoggle" type="button" data-tone-toggle aria-pressed="false" aria-label="${esc(label)}"><span class="tonetoggle__ic" aria-hidden="true"></span><span><span class="tonetoggle__oscuro">${esc(dark)}</span> / <span class="tonetoggle__claro">${esc(light)}</span></span></button>`;
 }
 
 /** Grain: grano de película animado encima de imágenes y videos. */
