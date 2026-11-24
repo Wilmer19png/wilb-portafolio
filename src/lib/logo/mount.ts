@@ -23,6 +23,8 @@ export interface LogoController {
   setColor(color: string): void;
   /** Color de las letras cuando el logo va a color (grafito en modo claro). */
   setInk(color: string): void;
+  /** Redibuja el cuadro actual (para la pintura del mouse cuando el logo ya está quieto). */
+  repaint(): void;
   /** Algo que se dibuja encima del logo en cada cuadro (la pintura del mouse en el Inicio). */
   setOverlay(fn: ((canvas: HTMLCanvasElement) => void) | null): void;
 }
@@ -82,6 +84,7 @@ export function mountLogo(canvas: HTMLCanvasElement): LogoController {
     setColor(c) { color = c || undefined; paint(); },
     setOverlay(fn) { overlay = fn; },
     setInk(c) { ink = c || undefined; paint(); },
+    repaint() { if (!raf) paint(); },
   };
 }
 

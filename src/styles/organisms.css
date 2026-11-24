@@ -166,7 +166,7 @@
 @layer components {
   .pinta-on .pinta {
     -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(var(--color-hueso), var(--color-hueso));
+    background-image: linear-gradient(currentColor, currentColor);
     -webkit-background-clip: text;
     background-clip: text;
   }
@@ -211,4 +211,21 @@
   html.apagando body::after { content: ''; position: fixed; inset: 0; z-index: 200; background: #000; animation: apagar .6s ease-in forwards; }
   .lightswitch.is-apagando .lightswitch__placa > span { transform: translateY(4px); }
   @keyframes apagar { from { opacity: 0; } to { opacity: 1; } }
+}
+
+/* Fondo que se pinta con el mouse (Trabajos, Sobre mí, Contacto, proyectos): colores de la marca, granulados */
+@layer components {
+  .fondo-pinta {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+    -webkit-mask-image: url('/img/grano-mascara.svg'); mask-image: url('/img/grano-mascara.svg');
+    -webkit-mask-size: 180px 180px; mask-size: 180px 180px;
+    animation: grano-mascara .45s steps(1) infinite;
+  }
+  :root[data-tono='claro'] .fondo-pinta { opacity: .55; mix-blend-mode: multiply; }
+  @keyframes grano-mascara {
+    0% { -webkit-mask-position: 0 0; mask-position: 0 0; }
+    33% { -webkit-mask-position: -60px 40px; mask-position: -60px 40px; }
+    66% { -webkit-mask-position: 50px -70px; mask-position: 50px -70px; }
+    100% { -webkit-mask-position: -30px -30px; mask-position: -30px -30px; }
+  }
 }

@@ -22,7 +22,10 @@ else reveal();
 const reel = document.querySelector('[data-homereel]');
 if (reel) {
   import('./lib/home-reel.js').then((m) => m.initHomeReel(reel));
-  import('./lib/paint.js').then((m) => m.initPaint(reel));
+  import('./lib/paint.js').then((m) => m.initPaint(reel, m.PRESETS.home));
+} else if (!document.querySelector('[data-ident]')) {
+  // Resto de páginas: textos, logo y fondo granulado
+  import('./lib/paint.js').then((m) => m.initPaint(document.body, m.PRESETS.pages));
 }
 const works = document.querySelector('[data-works]');
 if (works) {
