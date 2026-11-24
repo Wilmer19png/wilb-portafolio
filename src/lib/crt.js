@@ -25,7 +25,7 @@ precision mediump float;
 varying vec2 vUv;
 uniform sampler2D uTex;
 uniform vec2 uRes;
-uniform float uTime, uSx, uSy, uGlow, uFade;
+uniform float uTime, uSx, uSy, uGlow, uFade, uWipe;
 uniform float uShift, uBloom, uScan, uCurve, uVig, uNoise, uFlick, uTrack;
 
 float rand(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
@@ -48,6 +48,12 @@ void main() {
   float band = step(0.985, rand(vec2(floor(uTime * 7.0), 3.1))) * uTrack;
   float inBand = step(abs(q.y - rand(vec2(floor(uTime * 7.0), 9.7))), 0.06);
   q.x += band * inBand * 0.025 * (rand(vec2(uTime, q.y)) - 0.5) * 4.0;
+
+  // barrido hacia la página: una franja brillante baja y deja ver lo que hay detrás
+  float yTop = 1.0 - vUv.y;
+  float edge = uWipe * 1.16 - 0.04;
+  float bandK = (uWipe > 0.0) ? smoothstep(0.07, 0.0, abs(yTop - edge)) : 0.0;
+  q.x += bandK * 0.035 * sin(yTop * 380.0 + uTime * 40.0);
 
   float px = uShift / uRes.x;
   vec3 col;
@@ -78,12 +84,14 @@ void main() {
   col = col * inside + vec3(1.0, 0.98, 0.94) * uGlow * inside;
   // fuera de la pantalla curva: negro
   if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) col = vec3(0.0);
-  gl_FragColor = vec4(col * uFade, 1.0);
+  col += vec3(1.0, 0.97, 0.92) * bandK * 0.85;
+  float alpha = (uWipe > 0.0) ? max(step(edge, yTop), bandK) : 1.0;
+  gl_FragColor = vec4(col * uFade, alpha);
 }`;
 
 /** Crea el efecto sobre un <canvas>. Devuelve null si no hay WebGL (se usa el respaldo CSS). */
 export function createCRT(canvas, params = PARAMS) {
-  const gl = canvas.getContext('webgl', { antialias: false, premultipliedAlpha: false, preserveDrawingBuffer: false });
+  const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false, preserveDrawingBuffer: false });
   if (!gl) return null;
 
   const shader = (type, src) => {
@@ -121,11 +129,11 @@ export function createCRT(canvas, params = PARAMS) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
   const U = {};
-  ['uTex', 'uRes', 'uTime', 'uSx', 'uSy', 'uGlow', 'uFade', 'uShift', 'uBloom', 'uScan', 'uCurve', 'uVig', 'uNoise', 'uFlick', 'uTrack']
+  ['uTex', 'uRes', 'uTime', 'uSx', 'uSy', 'uGlow', 'uFade', 'uWipe', 'uShift', 'uBloom', 'uScan', 'uCurve', 'uVig', 'uNoise', 'uFlick', 'uTrack']
     .forEach((n) => { U[n] = gl.getUniformLocation(prog, n); });
 
   return {
-    /** Dibuja un cuadro. src = canvas con la imagen; tube = { sx, sy, glow, fade } (encendido / apagado). */
+    /** Dibuja un cuadro. src = canvas con la imagen; tube = { sx, sy, glow, fade, wipe } (encendido, apagado, barrido 0→1). */
     render(src, time, tube) {
       const w = canvas.width, h = canvas.height;
       gl.viewport(0, 0, w, h);
@@ -138,6 +146,7 @@ export function createCRT(canvas, params = PARAMS) {
       gl.uniform1f(U.uSy, tube.sy);
       gl.uniform1f(U.uGlow, tube.glow);
       gl.uniform1f(U.uFade, tube.fade);
+      gl.uniform1f(U.uWipe, tube.wipe ?? 0);
       gl.uniform1f(U.uShift, params.rgbShift * (w / canvas.clientWidth || 1));
       gl.uniform1f(U.uBloom, params.bloom);
       gl.uniform1f(U.uScan, params.scanlines);

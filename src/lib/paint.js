@@ -8,8 +8,8 @@
 
 import { logos } from './logo/mount';
 
-const BRAND = ['#f5c518', '#f27a1a', '#d62828', '#1f3fbf'];
 const TRAIL = 6;
+const STOPS = '#f5c518 0%, #f4a019 14%, #f27a1a 30%, #e4512a 44%, #d62828 56%, #9a3270 68%, #5b3a9c 78%, #1f3fbf 88%, rgb(31 63 191 / 0) 100%';
 
 export const PRESETS = {
   home: {
@@ -57,13 +57,12 @@ export function initPaint(root, preset = PRESETS.home) {
   const radius = (k, scale = 1) => R * scale * alpha * (1 - k * 0.11);
 
   /* ---- CSS: textos, aros y fondo ---- */
-  const brush = (x, y, r, k) => (k === 0
-    ? `radial-gradient(circle ${r}px at ${x}px ${y}px, ${BRAND[0]} 0%, ${BRAND[1]} 26%, ${BRAND[2]} 50%, ${BRAND[3]} 72%, rgb(31 63 191 / 0) 100%)`
-    : `radial-gradient(circle ${r}px at ${x}px ${y}px, ${BRAND[k % 4]} 0%, rgb(0 0 0 / 0) 72%)`);
+  // Degradado suave y parejo (con pasos intermedios): todos los puntos de la estela usan el mismo
+  const brush = (x, y, r) => `radial-gradient(circle ${r}px at ${x}px ${y}px, ${STOPS})`;
   const layersFor = (el, base) => {
     const b = el.getBoundingClientRect();
     if (b.bottom < -R || b.top > innerHeight + R) return null; // fuera de pantalla: no tocar
-    const layers = pts.map((p, k) => brush((p.x - b.left).toFixed(1), (p.y - b.top).toFixed(1), radius(k).toFixed(1), k));
+    const layers = pts.map((p, k) => brush((p.x - b.left).toFixed(1), (p.y - b.top).toFixed(1), radius(k).toFixed(1)));
     return `${layers.join(', ')}, linear-gradient(${base}, ${base})`;
   };
 
@@ -83,12 +82,10 @@ export function initPaint(root, preset = PRESETS.home) {
       const r = radius(k) * s;
       if (r < 1) continue;
       const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      if (k === 0) {
-        g.addColorStop(0, BRAND[0]); g.addColorStop(0.26, BRAND[1]); g.addColorStop(0.5, BRAND[2]);
-        g.addColorStop(0.72, BRAND[3]); g.addColorStop(1, 'rgba(31,63,191,0)');
-      } else {
-        g.addColorStop(0, BRAND[k % 4]); g.addColorStop(0.72, 'rgba(0,0,0,0)');
-      }
+      STOPS.split(', ').forEach((st) => {
+        const i = st.lastIndexOf(' ');
+        g.addColorStop(parseFloat(st.slice(i + 1)) / 100, st.slice(0, i));
+      });
       ctx.fillStyle = g;
       ctx.fillRect(x - r, y - r, r * 2, r * 2);
     }
@@ -113,7 +110,7 @@ export function initPaint(root, preset = PRESETS.home) {
     });
     rings.forEach((el) => { el.style.backgroundImage = off ? '' : layersFor(el, 'rgb(243 239 230 / .75)') ?? ''; });
     if (fondo) {
-      fondo.style.backgroundImage = off ? '' : pts.map((p, k) => brush(p.x.toFixed(1), p.y.toFixed(1), radius(k, 2.4).toFixed(1), k)).join(', ');
+      fondo.style.backgroundImage = off ? '' : pts.map((p, k) => brush(p.x.toFixed(1), p.y.toFixed(1), radius(k, 2.4).toFixed(1))).join(', ');
     }
     logo?.repaint(); // el logo quieto (ya armado) también recibe la pintura
     raf = !inside && off ? 0 : requestAnimationFrame(frame);
