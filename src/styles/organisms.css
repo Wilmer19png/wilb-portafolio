@@ -188,9 +188,10 @@
 /* LogoIdent: apertura con efecto de televisor (src/lib/ident.js). Sin JavaScript no aparece. */
 @layer components {
   .logoident { display: none; }
-  .js .logoident { display: block; position: fixed; inset: 0; z-index: 100; background: #000; cursor: pointer; transition: opacity .5s ease-out; }
-  .logoident.is-wiping { background: transparent; pointer-events: none; }
-  .logoident.is-wiping .logoident__saltar { opacity: 0; }
+  .js .logoident { display: block; position: fixed; inset: 0; z-index: 100; background: #000; cursor: pointer; }
+  /* ya en negro: el negro se disuelve despacio y aparece la página */
+  .logoident.is-done { opacity: 0; pointer-events: none; transition: opacity 1.4s cubic-bezier(.4, 0, .2, 1); }
+  .logoident.is-done .logoident__saltar { opacity: 0; transition: opacity .3s; }
   .logoident__pantalla { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   /* el logo se dibuja aquí y se pasa al televisor; no se ve directo */
   .logoident__logo { position: absolute; left: 0; top: 0; width: 760px; height: 204px; visibility: hidden; }
