@@ -11,9 +11,12 @@ const store = {
 function applyTone(claro) {
   if (claro) root.dataset.tono = 'claro'; else delete root.dataset.tono;
   document.querySelectorAll('[data-tone-toggle]').forEach((b) => b.setAttribute('aria-pressed', String(claro)));
-  // El logo de esas páginas es de un solo color: blanco en oscuro, grafito en claro
-  document.querySelectorAll('.header canvas[data-logo][data-color]').forEach((c) => {
-    logos.get(c)?.setColor(claro ? '#1c1c1c' : '#ffffff');
+  // Logo de un solo color: blanco en oscuro, grafito en claro. Logo a color: las letras pasan a grafito
+  document.querySelectorAll('.header canvas[data-logo]').forEach((c) => {
+    const logo = logos.get(c);
+    if (!logo) return;
+    if (c.dataset.color) logo.setColor(claro ? '#1c1c1c' : '#ffffff');
+    else logo.setInk(claro ? '#1c1c1c' : ''); // a color: solo las letras cambian
   });
 }
 

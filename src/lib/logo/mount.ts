@@ -21,6 +21,8 @@ export interface LogoController {
   /** Salta al comienzo de un ciclo de palabras (al cambiar de proyecto a mano). */
   restartCycle(): void;
   setColor(color: string): void;
+  /** Color de las letras cuando el logo va a color (grafito en modo claro). */
+  setInk(color: string): void;
   /** Algo que se dibuja encima del logo en cada cuadro (la pintura del mouse en el Inicio). */
   setOverlay(fn: ((canvas: HTMLCanvasElement) => void) | null): void;
 }
@@ -30,6 +32,7 @@ const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 export function mountLogo(canvas: HTMLCanvasElement): LogoController {
   const loop = canvas.dataset.mode === 'loop';
   let color = canvas.dataset.color || undefined;
+  let ink: string | undefined;
   let t = 0;
   let cycle = 0;
   let intro = true;
@@ -40,7 +43,7 @@ export function mountLogo(canvas: HTMLCanvasElement): LogoController {
   const listeners: LogoTick[] = [];
   let overlay: ((canvas: HTMLCanvasElement) => void) | null = null;
 
-  const paint = () => { draw(canvas, t, 'completo', color); overlay?.(canvas); };
+  const paint = () => { draw(canvas, t, 'completo', color, ink); overlay?.(canvas); };
   const emit = () => listeners.forEach((fn) => fn(t, cycle, holdFrom > 0));
   const nextCycle = (now: number) => { intro = false; holdFrom = 0; start = now; cycle += 1; t = LOOP_FROM; };
 
@@ -78,6 +81,7 @@ export function mountLogo(canvas: HTMLCanvasElement): LogoController {
     },
     setColor(c) { color = c || undefined; paint(); },
     setOverlay(fn) { overlay = fn; },
+    setInk(c) { ink = c || undefined; paint(); },
   };
 }
 

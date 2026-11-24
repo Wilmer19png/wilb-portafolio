@@ -5,7 +5,7 @@ import { projects, bySlug, loc } from '../data/projects.js';
 import { esc, Tape, Grain, RakunEye } from './atoms.js';
 import { ChapterTitle, Credits, YouTubeLite } from './molecules.js';
 import { mediaFor } from '../data/media.js';
-import { Header, Footer, TONE_PAGES, HomeReel, WorksOverview, AllWorksPill } from './organisms.js';
+import { Header, Footer, hasTone, HomeReel, WorksOverview, AllWorksPill } from './organisms.js';
 export * from './system.js';
 
 // <head> común: título, descripción, enlaces entre idiomas (hreflang) y el tono guardado
@@ -15,7 +15,7 @@ export function head(ctx) {
   const name = project ? project.title : ctx.t(TITLES[ctx.page.id]);
   const title = ctx.page.id === 'home' ? name : `${name} · ${ctx.t('meta.siteName')}`;
   // El tono claro se aplica antes de pintar para que no parpadee
-  const tone = TONE_PAGES.includes(ctx.page.id)
+  const tone = hasTone(ctx)
     ? `<script>try{if(localStorage.getItem('wilb:tono')==='claro')document.documentElement.dataset.tono='claro'}catch(e){}</script>`
     : '';
   return `<script>document.documentElement.classList.add('js')</script>

@@ -15,8 +15,10 @@ function parse(tf: string): M {
 const cache = new Map<string, Path2D>();
 const P = (d: string) => { let p = cache.get(d); if (!p) { p = new Path2D(d); if (cache.size > 400) cache.clear(); cache.set(d, p); } return p; };
 
-function shapes(ctx: CanvasRenderingContext2D, l: Layer, mono?: string) {
-  const col = mono || l.fill; ctx.fillStyle = col; ctx.strokeStyle = col;
+// ink: cambia solo las letras (crema) por otro color, para fondos claros; las barras siguen a color
+const CREMA = '#f3efe6';
+function shapes(ctx: CanvasRenderingContext2D, l: Layer, mono?: string, ink?: string) {
+  const col = mono || (ink && l.fill.toLowerCase() === CREMA ? ink : l.fill); ctx.fillStyle = col; ctx.strokeStyle = col;
   for (const s of l.shapes) {
     if (s.kind === 'path') ctx.fill(P(s.d));
     else if (s.kind === 'stroke') { ctx.lineWidth = s.width; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(P(s.d)); }
@@ -27,7 +29,7 @@ function shapes(ctx: CanvasRenderingContext2D, l: Layer, mono?: string) {
 let off: HTMLCanvasElement | null = null;
 // t = tiempo de la coreografía (frames a 30 fps, sin tempo)
 // mono: un solo color para todo (ej. '#fff'); las estelas quedan más tenues para que se lea el movimiento
-export function draw(canvas: HTMLCanvasElement, t: number, pass: 'completo' | 'logo' | 'estelas' = 'completo', mono?: string) {
+export function draw(canvas: HTMLCanvasElement, t: number, pass: 'completo' | 'logo' | 'estelas' = 'completo', mono?: string, ink?: string) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const w = canvas.clientWidth, h = canvas.clientHeight;
   if (!w || !h) return;
@@ -49,7 +51,7 @@ export function draw(canvas: HTMLCanvasElement, t: number, pass: 'completo' | 'l
     c.save(); c.setTransform(...m); c.globalAlpha = c === ctx ? alpha : 1;
     if (l.clip) { c.beginPath(); c.rect(l.clip.x, l.clip.y, l.clip.w, l.clip.h); c.clip(); }
     if (l.mask && l.mask.kind === 'fill') c.clip(P(l.mask.d));
-    shapes(c, l, mono);
+    shapes(c, l, mono, ink);
     if (l.mask && l.mask.kind === 'stroke') {
       c.globalAlpha = 1; c.globalCompositeOperation = 'destination-in';
       c.lineWidth = l.mask.width; c.lineCap = 'round'; c.lineJoin = 'round';

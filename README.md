@@ -80,7 +80,7 @@ Cada nivel tiene su archivo de HTML en `src/render/` y su hoja de estilos en `sr
 | Organismos | `organisms.js` · `organisms.css` | `Header`, `MenuMobile`, `Footer`, `HomeReel`, `WorksOverview`, `AllWorksPill` |
 | Plantillas | `src/pages/*.html` · `templates.css` | `HomeTemplate` (home.html), `WorksTemplate` (trabajos.html), `ProjectTemplate` (proyecto.html) |
 
-El comportamiento (menú del celular, tono oscuro / claro, sonido) está en `src/lib/ui.js`. El tono usa variables `--tono-*` y `data-tono="claro"` en `<html>`; solo Sobre mí y Contacto lo pueden cambiar y se recuerda entre visitas.
+El comportamiento (menú del celular, tono oscuro / claro, sonido) está en `src/lib/ui.js`. El tono usa variables `--tono-*` y `data-tono="claro"` en `<html>`; lo pueden cambiar Sobre mí, Contacto, Trabajos y cada proyecto, y se recuerda entre visitas. En claro, el logo a color pasa sus letras a grafito.
 
 Los nombres son los mismos en Figma y en el código (brief §13).
 

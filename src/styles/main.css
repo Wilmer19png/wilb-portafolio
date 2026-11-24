@@ -40,6 +40,7 @@
     transition: background-color .45s, color .45s;
   }
   .pagina-trabajos, .pagina-proyecto { --tono-bg: var(--color-carbon); }
+  :root[data-tono='claro'] .pagina-trabajos, :root[data-tono='claro'] .pagina-proyecto { --tono-bg: var(--color-papel); }
   /* Papel con grano (lienzo: Trabajos, Sobre mí, Contacto) */
   .con-papel { background-image: url('/img/grano-papel.svg'); background-size: 600px 600px; background-blend-mode: overlay; }
   :root[data-tono='claro'] .con-papel { background-blend-mode: normal; }

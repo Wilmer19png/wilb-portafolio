@@ -3,8 +3,9 @@
 import { esc, Pill, LangToggle, Logo, Tape, LightSwitch, ToneToggle } from './atoms.js';
 import { NavGroup, SoundToggle, Signature } from './molecules.js';
 
-// Páginas con interruptor oscuro / claro (lienzo: Sobre mí y Contacto)
-export const TONE_PAGES = ['sobre', 'contacto'];
+// Páginas con interruptor oscuro / claro: Sobre mí, Contacto, Trabajos y cada proyecto
+export const TONE_PAGES = ['sobre', 'contacto', 'trabajos'];
+export const hasTone = (ctx) => TONE_PAGES.includes(ctx.page.id) || ctx.page.template === 'proyecto';
 
 const isOn = (ctx, id) => ctx.page.id === id || (id === 'trabajos' && ctx.page.template === 'proyecto');
 
@@ -16,16 +17,16 @@ const links = (ctx) => ({
 const toneToggle = (ctx) => ToneToggle({ label: ctx.t('nav.tone'), dark: ctx.t('nav.dark'), light: ctx.t('nav.light') });
 const langToggle = (ctx) => LangToggle({ lang: ctx.lang, hrefs: ctx.hrefs, label: ctx.t('nav.langLabel') });
 
-/** Logo según la página: Inicio en blanco y en ciclo; Sobre mí / Contacto en un color que sigue el tono;
- *  el resto a color, armado una vez. */
+/** Logo según la página: Inicio en blanco y en ciclo; Sobre mí / Contacto de un solo color que sigue el tono;
+ *  Trabajos y proyectos a color (en claro, las letras pasan a grafito: ver ui.js). */
 function headerLogo(ctx) {
   const home = ctx.page.id === 'home';
-  const tono = TONE_PAGES.includes(ctx.page.id);
+  const mono = home || ['sobre', 'contacto'].includes(ctx.page.id);
   return Logo({
     href: ctx.url('home'),
     label: `Wil B · ${ctx.t('nav.home')}`,
     mode: home ? 'loop' : 'intro',
-    color: home || tono ? '#ffffff' : '',
+    color: mono ? '#ffffff' : '',
   });
 }
 
@@ -33,7 +34,7 @@ function headerLogo(ctx) {
 export function Header(ctx) {
   const { main, second } = links(ctx);
   const items = (list) => list.map(([id, key]) => ({ href: ctx.url(id), label: ctx.t(key), on: isOn(ctx, id) }));
-  const tono = TONE_PAGES.includes(ctx.page.id);
+  const tono = hasTone(ctx);
   return `<header class="header${ctx.page.id === 'home' ? ' header--sobre' : ''}">
     ${Tape()}
     <div class="header__fila">
@@ -49,7 +50,7 @@ export function Header(ctx) {
 /** MenuMobile: el menú a pantalla completa en celular. */
 export function MenuMobile(ctx) {
   const { main, second } = links(ctx);
-  const tono = TONE_PAGES.includes(ctx.page.id);
+  const tono = hasTone(ctx);
   return `<div class="menumobile" id="menu-movil" role="dialog" aria-modal="true" aria-label="${esc(ctx.t('nav.menu'))}" hidden>
     ${Tape()}
     <div class="menumobile__top">
