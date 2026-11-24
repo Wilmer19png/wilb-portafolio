@@ -9,7 +9,8 @@
 import { logos } from './logo/mount';
 
 const TRAIL = 6;
-const STOPS = '#f5c518 0%, #f4a019 14%, #f27a1a 30%, #e4512a 44%, #d62828 56%, #9a3270 68%, #5b3a9c 78%, #1f3fbf 88%, rgb(31 63 191 / 0) 100%';
+// El centro amarillo es pequeño; la mayor parte va de naranja a rojo, morado y azul
+const STOPS = '#f5c518 0%, #f4a019 5%, #f27a1a 14%, #e4512a 28%, #d62828 42%, #9a3270 58%, #5b3a9c 72%, #1f3fbf 86%, rgb(31 63 191 / 0) 100%';
 
 export const PRESETS = {
   home: {
