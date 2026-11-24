@@ -231,3 +231,10 @@
     100% { -webkit-mask-position: -30px -30px; mask-position: -30px -30px; }
   }
 }
+
+/* Agua: con la CSS Paint API (public/worklets/agua.js) la pintura del mouse tiene forma orgánica y reflejos */
+@layer components {
+  .pinta-on.agua .pinta { background-image: paint(agua), linear-gradient(currentColor, currentColor); }
+  .pinta-on.agua .homereel__aro.pinta { background-image: paint(agua), linear-gradient(rgb(243 239 230 / .75), rgb(243 239 230 / .75)); }
+  .agua .fondo-pinta { background-image: paint(agua); }
+}

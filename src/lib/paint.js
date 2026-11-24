@@ -7,6 +7,11 @@
 // Solo con mouse y sin «reducir movimiento».
 
 import { logos } from './logo/mount';
+import { drawWater } from './agua.js';
+
+// Agua (forma orgánica + reflejos) con la CSS Paint API (Chrome/Edge); si no, degradado redondo
+const WORKLET = typeof CSS !== 'undefined' && 'paintWorklet' in CSS;
+if (WORKLET) CSS.paintWorklet.addModule('/worklets/agua.js');
 
 const TRAIL = 6;
 const STOPS = '#f5c518 0%, #f4a019 14%, #f27a1a 30%, #e4512a 44%, #d62828 56%, #9a3270 68%, #5b3a9c 78%, #1f3fbf 88%, rgb(31 63 191 / 0) 100%';
@@ -36,6 +41,7 @@ export function initPaint(root, preset = PRESETS.home) {
   const rings = preset.rings ? [...root.querySelectorAll(preset.rings)] : [];
   [...texts, ...rings].forEach((el) => el.classList.add('pinta'));
   document.documentElement.classList.add('pinta-on');
+  if (WORKLET) document.documentElement.classList.add('agua');
   const canvas = document.querySelector('.header canvas[data-logo]');
   const logo = canvas && logos.get(canvas);
 
@@ -65,6 +71,9 @@ export function initPaint(root, preset = PRESETS.home) {
     const layers = pts.map((p, k) => brush((p.x - b.left).toFixed(1), (p.y - b.top).toFixed(1), radius(k).toFixed(1)));
     return `${layers.join(', ')}, linear-gradient(${base}, ${base})`;
   };
+  // Con el worklet: solo se pasan los puntos (relativos a cada elemento) y el tiempo
+  const ptsFor = (ox, oy, scale = 1) => pts.map((p, k) => `${(p.x - ox).toFixed(1)},${(p.y - oy).toFixed(1)},${radius(k, scale).toFixed(1)}`).join('|');
+  const setWater = (el, value, t) => { el.style.setProperty('--agua-pts', value); el.style.setProperty('--agua-t', t); };
 
   /* ---- canvas: el logo ---- */
   const paintLogo = (cv) => {
@@ -76,19 +85,8 @@ export function initPaint(root, preset = PRESETS.home) {
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalCompositeOperation = 'source-atop'; // solo donde ya hay logo
-    for (let k = TRAIL - 1; k >= 0; k--) {
-      const x = (pts[k].x - b.left) * s;
-      const y = (pts[k].y - b.top) * s;
-      const r = radius(k) * s;
-      if (r < 1) continue;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      STOPS.split(', ').forEach((st) => {
-        const i = st.lastIndexOf(' ');
-        g.addColorStop(parseFloat(st.slice(i + 1)) / 100, st.slice(0, i));
-      });
-      ctx.fillStyle = g;
-      ctx.fillRect(x - r, y - r, r * 2, r * 2);
-    }
+    const local = pts.map((p, k) => ({ x: (p.x - b.left) * s, y: (p.y - b.top) * s, r: radius(k) * s }));
+    drawWater(ctx, local, performance.now() / 1000, cv.width, cv.height);
     ctx.restore();
   };
   logo?.setOverlay(paintLogo);
@@ -103,6 +101,19 @@ export function initPaint(root, preset = PRESETS.home) {
       pts[k].y += (pts[k - 1].y - pts[k].y) * 0.32;
     }
     const off = alpha < 0.01;
+    if (WORKLET) {
+      const t = (performance.now() / 1000).toFixed(3);
+      [...texts, ...rings].forEach((el) => {
+        if (off) { setWater(el, '', t); return; }
+        const b = el.getBoundingClientRect();
+        if (b.bottom < -R || b.top > innerHeight + R) return;
+        setWater(el, ptsFor(b.left, b.top), t);
+      });
+      if (fondo) setWater(fondo, off ? '' : ptsFor(0, 0, 2.4), t);
+      logo?.repaint();
+      raf = !inside && off ? 0 : requestAnimationFrame(frame);
+      return;
+    }
     texts.forEach((el) => {
       if (off) { el.style.backgroundImage = ''; return; }
       const l = layersFor(el, preset.base);
