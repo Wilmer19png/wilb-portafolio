@@ -76,12 +76,21 @@ Cada nivel tiene su archivo de HTML en `src/render/` y su hoja de estilos en `sr
 | Nivel | Archivos | Piezas |
 |---|---|---|
 | Átomos | `atoms.js` · `atoms.css` | `Pill`, `LangToggle`, `Logo`, `Tape`, `ButtonPrimary`, `Input`, `Tag`, `Folio`, `LightSwitch`, `RakunEye`, `ToneToggle`, `Grain` |
-| Moléculas | `molecules.js` · `molecules.css` | `NavGroup`, `ChapterTitle`, `FieldLabel`, `WorkCard`, `SoundToggle`, `Credits` |
-| Organismos | `organisms.js` · `organisms.css` | `Header`, `MenuMobile`, `Footer` (más en las fases siguientes: `HomeReel`, `WorksOverview`…) |
+| Moléculas | `molecules.js` · `molecules.css` | `NavGroup`, `ChapterTitle`, `FieldLabel`, `WorkCard`, `SoundToggle`, `Signature`, `Credits`, `YouTubeLite` |
+| Organismos | `organisms.js` · `organisms.css` | `Header`, `MenuMobile`, `Footer`, `HomeReel`, `WorksOverview`, `AllWorksPill` |
+| Plantillas | `src/pages/*.html` · `templates.css` | `HomeTemplate` (home.html), `WorksTemplate` (trabajos.html), `ProjectTemplate` (proyecto.html) |
 
 El comportamiento (menú del celular, tono oscuro / claro, sonido) está en `src/lib/ui.js`. El tono usa variables `--tono-*` y `data-tono="claro"` en `<html>`; solo Sobre mí y Contacto lo pueden cambiar y se recuerda entre visitas.
 
 Los nombres son los mismos en Figma y en el código (brief §13).
+
+## Videos e imágenes
+
+Todo está en un solo manifiesto: `src/data/media.js` (brief §9.5). Los adelantos mudos ya están comprimidos y publicados en el almacenamiento de RAKÜN (Supabase); las portadas están en `public/media/posters`. Los proyectos completos se ven en YouTube, que carga solo al hacer clic.
+
+- **Inicio:** cada proyecto dura un ciclo del logo (BLUR → FOCUS → LIT). Solo se descargan el video actual y el siguiente. Los reels verticales no entran en el Inicio.
+- **Trabajos:** quietos y desenfocados; al pasar el mouse se enfocan y corre el adelanto (en celular, el que está a la vista). Filtros con `?c=categoria` en la dirección.
+- Con «reducir movimiento» o ahorro de datos se quedan las portadas, sin video.
 
 ## Logo animado
 
@@ -97,7 +106,7 @@ Archivo (titulares, ancho 72 %), Space Grotesk y Space Mono, todas con licencia 
 - [x] 1. Proyecto base, estructura e idiomas
 - [x] 2. Tokens, tipografías y átomos (ver `/sistema/`)
 - [x] 3. Moléculas y organismos base (Header con el logo animado, menú del celular, Footer, tono claro / oscuro)
-- [ ] 4. Inicio + Trabajos + Proyecto
+- [x] 4. Inicio + Trabajos + Proyecto (reel sincronizado con el logo, filtros, YouTube al clic)
 - [ ] 5–11. Historia, piezas editoriales, juego, contacto, proceso
 - [ ] 12. Sonido y audiodescripción
 - [ ] 13. Responsive, accesibilidad y rendimiento

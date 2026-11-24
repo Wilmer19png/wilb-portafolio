@@ -20,14 +20,29 @@ export function FieldLabel({ id, label, ...input }) {
 
 /** WorkCard: recuadro de un trabajo. Cinta de 4 colores encima, imagen quieta y desenfocada;
  *  al pasar el mouse se enfoca y corre el video (data-video). Pie en una sola línea. */
-export function WorkCard({ href, line, poster = '', video = '', width = '100%', height = '30vw' }) {
-  const img = poster
-    ? `<img src="${poster}" alt="" loading="lazy" decoding="async">`
-    : '<span class="workcard__vacio" aria-hidden="true"></span>';
-  return `<a class="workcard" href="${href}" style="--ancho:${width};--alto:${height}"${video ? ` data-video="${video}"` : ''}>
-      <span class="workcard__cuadro">${Tape({ variant: 'marca' })}<span class="workcard__marco">${img}${Grain()}</span></span>
+export function WorkCard({ href, line, poster = '', posters = [], video = '', category = '', width = '100%', height = '30vw', eager = false }) {
+  const load = eager ? '' : ' loading="lazy"';
+  let img = '<span class="workcard__vacio" aria-hidden="true"></span>';
+  if (posters.length) img = `<span class="workcard__reels">${posters.map((p) => `<img src="${p}" alt="" decoding="async">`).join('')}</span>`;
+  else if (poster) img = `<img src="${poster}" alt=""${load} decoding="async">`;
+  return `<a class="workcard" href="${href}" style="--ancho:${width};--alto:${height}"${category ? ` data-cat="${category}"` : ''}${video ? ` data-video="${video}"` : ''}>
+      <span class="workcard__cuadro">${Tape({ variant: 'marca' })}<span class="workcard__marco${posters.length ? ' workcard__marco--reels' : ''}">${img}${Grain()}</span></span>
       <span class="workcard__pie">${esc(line)}</span>
     </a>`;
+}
+
+/** Credits: los créditos de un proyecto en mono (término · dato). items = [[término, dato]] */
+export function Credits({ items }) {
+  return `<dl class="credits">${items.filter(([, v]) => v).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`;
+}
+
+/** YouTubeLite: portada con botón Play; el reproductor de YouTube carga solo al hacer clic (brief §9.1). */
+export function YouTubeLite({ id, poster, title, playLabel, vertical = false }) {
+  return `<div class="youtubelite${vertical ? ' youtubelite--vertical' : ''}" data-youtube="${id}" data-title="${esc(title)}">
+      <img src="${poster}" alt="" decoding="async">
+      ${Grain()}
+      <button type="button" class="youtubelite__play" aria-label="${esc(playLabel)}: ${esc(title)}"><span>PLAY</span></button>
+    </div>`;
 }
 
 /** SoundToggle: las 4 barras de ecualizador; prende y apaga el sonido. */
@@ -37,7 +52,7 @@ export function SoundToggle({ labelOn, labelOff }) {
     </button>`;
 }
 
-/** Credits: «©2026 WILMER BURITICÁ · WEBSITE BY» y el ojo de RAKÜN. */
-export function Credits({ websiteBy }) {
-  return `<span class="credits">©2026 WILMER BURITICÁ <span class="credits__punto" aria-hidden="true">·</span> <span class="credits__by">${esc(websiteBy)} ${RakunEye()}</span></span>`;
+/** Signature: la firma del pie, «©2026 WILMER BURITICÁ · WEBSITE BY» y el ojo de RAKÜN. */
+export function Signature({ websiteBy }) {
+  return `<span class="signature">©2026 WILMER BURITICÁ <span class="signature__punto" aria-hidden="true">·</span> <span class="signature__by">${esc(websiteBy)} ${RakunEye()}</span></span>`;
 }

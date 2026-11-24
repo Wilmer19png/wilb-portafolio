@@ -3,6 +3,7 @@
 @import './atoms.css';
 @import './molecules.css';
 @import './organisms.css';
+@import './templates.css';
 
 /* Clases de color que se arman en JS (atoms.js, system.js): Tailwind no las ve solo */
 @source inline("bg-{hueso,noche,grafito,carbon,papel,humo,amarillo,naranja,azul,rojo}");
@@ -55,12 +56,9 @@
 
 /* Provisional hasta la fase 4 (Inicio, Trabajos y Proyecto con su maquetación final) */
 @layer components {
-  .works-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 80px 26px; padding-top: 54px; }
-  .project dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 24px; font-family: var(--font-mono); }
-  .project dd { margin: 0; }
-  .project-nav { display: flex; justify-content: space-between; gap: 16px; font-family: var(--font-mono); }
   .note { font-family: var(--font-mono); font-size: 13px; color: var(--tono-muted); }
-  @media (max-width: 900px) { .works-grid { grid-template-columns: 1fr; gap: 56px; } }
+  /* Textos que faltan: el brief pide no inventarlos y dejar el TODO a la vista */
+  .todo { font-family: var(--font-mono); font-size: var(--text-meta-xs); color: var(--tono-todo); text-transform: none; }
 }
 
 /* Página del sistema de diseño */

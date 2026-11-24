@@ -1,7 +1,7 @@
 // Página del sistema de diseño (/sistema/, /en/system/): tokens y átomos con su nombre,
 // los mismos que en Figma. Evidencia de Atomic Design para la UCC.
 import { esc, Pill, LangToggle, Logo, Tape, ButtonPrimary, Input, Tag, Folio, LightSwitch, RakunEye, Grain, ToneToggle } from './atoms.js';
-import { NavGroup, ChapterTitle, FieldLabel, WorkCard, SoundToggle, Credits } from './molecules.js';
+import { NavGroup, ChapterTitle, FieldLabel, WorkCard, SoundToggle, Signature, Credits, YouTubeLite } from './molecules.js';
 import { Footer } from './organisms.js';
 
 const COLORES = [
@@ -68,8 +68,10 @@ export function systemPageParts(ctx) {
       ${ficha('ChapterTitle', `<div style="width:100%">${ChapterTitle({ left: 'Wil', right: 'B', tag: 'p' })}</div>`)}
       ${ficha('FieldLabel', `<div style="width:100%">${FieldLabel({ id: 'ds-campo', label: t('name'), autocomplete: 'off' })}</div>`)}
       ${ficha('SoundToggle', SoundToggle({ labelOn: ctx.t('footer.soundOn'), labelOff: ctx.t('footer.soundOff') }), 'clic: se mueve')}
-      ${ficha('Credits', Credits({ websiteBy: ctx.t('footer.websiteBy') }))}
-      ${ficha('WorkCard', `<div style="width:100%">${WorkCard({ href: '#', line: p.line, height: '200px' })}</div>`, 'pasa el mouse: se enfoca')}
+      ${ficha('Signature', Signature({ websiteBy: ctx.t('footer.websiteBy') }))}
+      ${ficha('WorkCard', `<div style="width:100%">${WorkCard({ href: '#', line: p.line, poster: '/media/posters/amor-de-calle.jpg', height: '200px' })}</div>`, 'pasa el mouse: se enfoca')}
+      ${ficha('Credits', Credits({ items: [[ctx.t('project.format'), ctx.t('categories.videoclip')], [ctx.t('project.client'), 'Apostol'], [ctx.t('project.year'), '2026']] }))}
+      ${ficha('YouTubeLite', `<div style="width:100%">${YouTubeLite({ id: '4RtfGuRQXYw', poster: '/media/posters/amor-de-calle.jpg', title: 'Amor de calle', playLabel: ctx.t('project.play') })}</div>`, 'carga YouTube solo al hacer clic')}
     </div>
   </section>
 
@@ -78,6 +80,7 @@ export function systemPageParts(ctx) {
     <div class="ds-fichas ds-fichas--ancho">
       ${ficha('Header', `<p class="ds-nota">${esc(t('headerNote'))}</p>`)}
       ${ficha('MenuMobile', `<p class="ds-nota">${esc(t('menuNote'))}</p>`)}
+      ${ficha('HomeReel · WorksOverview · AllWorksPill', `<p class="ds-nota">${esc(t('pagesNote'))}</p>`)}
       ${ficha('Footer', Footer(home), 'Inicio', ' ds-ficha__muestra--bloque')}
       ${ficha('Footer', Footer(ctx), 'resto de páginas', ' ds-ficha__muestra--bloque')}
     </div>

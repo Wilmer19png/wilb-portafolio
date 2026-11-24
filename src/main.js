@@ -10,6 +10,21 @@ import { initUI } from './lib/ui.js';
 mountAll();
 initUI();
 
+// Cada página carga solo lo que usa
+const reel = document.querySelector('[data-homereel]');
+if (reel) import('./lib/home-reel.js').then((m) => m.initHomeReel(reel));
+const works = document.querySelector('[data-works]');
+if (works) {
+  import('./lib/works.js').then((m) => {
+    m.initWorkCards(works);
+    const pill = document.querySelector('[data-filtros]');
+    if (pill) m.initFilters(pill, works);
+  });
+}
+if (document.querySelector('.youtubelite, video[data-src]')) {
+  import('./lib/project.js').then((m) => { m.initYouTubeLite(); m.initClips(); });
+}
+
 const KEY = 'wilb:lang';
 const lang = currentLang();
 

@@ -2,9 +2,10 @@
 // { page, lang, t(clave), url(id), alt, hrefs: { es, en } } y devuelve HTML.
 // Las plantillas los llaman con <!--@nombre--> (plugins/i18n-pages.js).
 import { projects, bySlug, loc } from '../data/projects.js';
-import { esc } from './atoms.js';
-import { ChapterTitle, WorkCard } from './molecules.js';
-import { Header, Footer, TONE_PAGES } from './organisms.js';
+import { esc, Tape, Grain, RakunEye } from './atoms.js';
+import { ChapterTitle, Credits, YouTubeLite } from './molecules.js';
+import { mediaFor } from '../data/media.js';
+import { Header, Footer, TONE_PAGES, HomeReel, WorksOverview, AllWorksPill } from './organisms.js';
 export * from './system.js';
 
 // <head> común: título, descripción, enlaces entre idiomas (hreflang) y el tono guardado
@@ -36,36 +37,62 @@ export function title(ctx) {
   return ChapterTitle({ left: ctx.t(`${k}.left`), right: ctx.t(`${k}.right`) });
 }
 
-// Pie de un trabajo en una sola línea: nombre · género · formato
-export function workLine(p, ctx) {
-  const cat = ctx.t(`categories.${p.category}`);
-  const format = loc(p.format, ctx.lang);
-  return [p.title, cat, format !== cat ? format : ''].filter(Boolean).join(' · ');
-}
+export const homeReel = HomeReel;
+export const worksOverview = WorksOverview;
+export const allWorksPill = AllWorksPill;
 
-// Lista de trabajos (provisional: la maquetación editorial y los videos llegan en la fase 4)
-export function worksList(ctx) {
-  return `<div class="works-grid">${projects.map((p) => WorkCard({ href: ctx.url(`proyecto:${p.slug}`), line: workLine(p, ctx), height: '24vw' })).join('')}
-  </div>`;
-}
-
-// Cuerpo de la página de un proyecto
+// Página de un proyecto (ProjectTemplate, brief §2.3): titular partido, video a sangre (YouTube lite),
+// sinopsis, créditos en mono, fotogramas en movimiento, lo que aprendí, «Una producción RAKÜN», anterior / siguiente.
 export function project(ctx) {
   const i = projects.findIndex((p) => p.slug === ctx.page.project);
   const p = projects[i];
+  const m = mediaFor(p.slug);
   const prev = projects[(i - 1 + projects.length) % projects.length];
   const next = projects[(i + 1) % projects.length];
-  return `<article class="project">
+  const play = ctx.t('project.play');
+
+  const video = m.reels
+    ? `<div class="proyecto__reels">${m.reels.map((r, n) => YouTubeLite({ id: r.youtube, poster: r.poster, title: `${p.title} · Reel ${n + 1}`, playLabel: play, vertical: true })).join('')}</div>`
+    : YouTubeLite({ id: p.youtube, poster: m.poster, title: p.title, playLabel: play });
+
+  const clips = (m.clips ?? []).length
+    ? `<section class="proyecto__cuadros" aria-label="${esc(ctx.t('project.frames'))}">${m.clips.map((src) => `
+        <div class="proyecto__cuadro"><video data-src="${src}" muted loop playsinline preload="none" poster="${m.poster}" aria-hidden="true"></video>${Grain()}</div>`).join('')}
+      </section>`
+    : '';
+
+  return `<article class="proyecto">
     ${ChapterTitle({ left: p.title, right: ctx.t(`categories.${p.category}`) })}
-    <p>${esc(loc(p.summary, ctx.lang))}</p>
-    <dl>
-      <dt>${esc(ctx.t('project.client'))}</dt><dd>${esc(loc(p.client, ctx.lang))}</dd>
-      <dt>${esc(ctx.t('project.year'))}</dt><dd>${p.year ?? '—'}</dd>
-      <dt>${esc(ctx.t('project.role'))}</dt><dd>${esc(loc(p.role, ctx.lang))}</dd>
-    </dl>
-    <nav class="project-nav">
-      <a href="${ctx.url(`proyecto:${prev.slug}`)}">← ${esc(ctx.t('project.prev'))}: ${esc(prev.title)}</a>
-      <a href="${ctx.url(`proyecto:${next.slug}`)}">${esc(ctx.t('project.next'))}: ${esc(next.title)} →</a>
+    <div class="proyecto__video">${video}</div>
+
+    <div class="proyecto__cuerpo">
+      <div class="proyecto__texto">
+        <p class="proyecto__sinopsis">${esc(loc(p.summary, ctx.lang))}</p>
+        <span class="todo">${esc(ctx.t('project.todoFirstPerson'))}</span>
+      </div>
+      <aside class="proyecto__creditos">
+        ${Tape({ variant: 'marca' })}
+        ${Credits({ items: [
+          [ctx.t('project.format'), loc(p.format, ctx.lang)],
+          [ctx.t('project.client'), loc(p.client, ctx.lang)],
+          [ctx.t('project.year'), p.year ? String(p.year) : ''],
+          [ctx.t('project.role'), loc(p.role, ctx.lang)],
+        ] })}
+      </aside>
+    </div>
+
+    ${clips}
+
+    <section class="proyecto__aprendi">
+      <h2>${esc(ctx.t('project.learned'))}</h2>
+      <span class="todo">${esc(ctx.t('project.todoLearned'))}</span>
+    </section>
+
+    <p class="proyecto__rakun">${esc(ctx.t('project.production'))} RAKÜN ${RakunEye()}</p>
+
+    <nav class="proyecto__nav" aria-label="${esc(ctx.t('project.more'))}">
+      <a href="${ctx.url(`proyecto:${prev.slug}`)}" rel="prev"><span>← ${esc(ctx.t('project.prev'))}</span><b>${esc(prev.title)}</b></a>
+      <a href="${ctx.url(`proyecto:${next.slug}`)}" rel="next"><span>${esc(ctx.t('project.next'))} →</span><b>${esc(next.title)}</b></a>
     </nav>
   </article>`;
 }
