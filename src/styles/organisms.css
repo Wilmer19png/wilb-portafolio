@@ -184,3 +184,31 @@
   }
   .pinta-on .homereel__play:hover .homereel__aro.pinta { border-color: transparent; }
 }
+
+/* LogoIdent: apertura con efecto de televisor (src/lib/ident.js). Sin JavaScript no aparece. */
+@layer components {
+  .logoident { display: none; }
+  .js .logoident { display: block; position: fixed; inset: 0; z-index: 100; background: #000; cursor: pointer; transition: opacity .5s ease-out; }
+  .logoident.is-done { opacity: 0; pointer-events: none; }
+  .logoident__pantalla { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* el logo se dibuja aquí y se pasa al televisor; no se ve directo */
+  .logoident__logo { position: absolute; left: 0; top: 0; width: 760px; height: 204px; visibility: hidden; }
+  .logoident__saltar {
+    position: absolute; right: var(--spacing-gutter); bottom: 28px; z-index: 2; cursor: pointer;
+    padding: 10px 18px; border: 1.5px solid rgb(243 239 230 / .35); border-radius: var(--radius-pill); background: none;
+    color: rgb(243 239 230 / .7); font-family: var(--font-mono); font-size: var(--text-meta-sm); text-transform: uppercase;
+    transition: color .2s, border-color .2s;
+  }
+  .logoident__saltar:hover, .logoident__saltar:focus-visible { color: var(--color-hueso); border-color: var(--color-hueso); }
+  /* respaldo sin WebGL: líneas de barrido y viñeta en CSS */
+  .logoident.is-fallback::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgb(0 0 0 / .28) 0 1px, transparent 1px 3px), radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / .7));
+  }
+  .pagina-historia { --tono-bg: var(--color-noche); }
+
+  /* «Apaga la luz»: el interruptor baja y todo se va a negro antes de ir a la historia */
+  html.apagando body::after { content: ''; position: fixed; inset: 0; z-index: 200; background: #000; animation: apagar .6s ease-in forwards; }
+  .lightswitch.is-apagando .lightswitch__placa > span { transform: translateY(4px); }
+  @keyframes apagar { from { opacity: 0; } to { opacity: 1; } }
+}

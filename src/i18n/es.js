@@ -80,6 +80,9 @@ export default {
     left: 'Hablemos',
     right: 'de tu historia',
   },
+  ident: {
+    skip: 'Saltar',
+  },
   story: {
     title: 'Historia',
   },

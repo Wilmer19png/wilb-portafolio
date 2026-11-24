@@ -79,7 +79,7 @@ export function Footer(ctx) {
   }
   return `<footer class="footer">
     ${credits}
-    <a class="footer__fosforo" href="${ctx.url('historia')}">${esc(ctx.t('footer.match'))}</a>
+    <a class="footer__fosforo" href="${ctx.url('historia')}" data-apagar>${esc(ctx.t('footer.match'))}</a>
   </footer>`;
 }
 
@@ -193,5 +193,15 @@ export function AllWorksPill(ctx) {
         ${Object.keys(FILTER_COLORS).map((k) => `<button type="button" class="allworkspill__op" data-filtro="${k}" data-nombre="${esc(name(k))}" aria-pressed="${k === 'todos'}"><span class="bg-${FILTER_COLORS[k]}" aria-hidden="true"></span>${esc(name(k))}</button>`).join('')}
       </div>
     </div>
+  </div>`;
+}
+
+/** LogoIdent: la apertura con efecto de televisor antes de la historia (brief §2.0). Comportamiento en src/lib/ident.js. */
+export function LogoIdent(ctx) {
+  return `<div class="logoident" data-ident>
+    <canvas class="logoident__pantalla" aria-hidden="true"></canvas>
+    <canvas class="logoident__logo" aria-hidden="true"></canvas>
+    <p class="sr-only">Wil B</p>
+    <button type="button" class="logoident__saltar">${esc(ctx.t('ident.skip'))}</button>
   </div>`;
 }

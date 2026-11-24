@@ -7,10 +7,16 @@ import { currentLang } from './lib/i18n.js';
 import { mountAll } from './lib/logo/mount';
 import { initUI } from './lib/ui.js';
 import { reveal } from './lib/reveal.js';
+import { initLightsOff } from './lib/ident.js';
 
 mountAll();
 initUI();
-reveal();
+initLightsOff();
+
+// Historia: primero la apertura con el logo en el televisor; la página entra después
+const ident = document.querySelector('[data-ident]');
+if (ident) import('./lib/ident.js').then((m) => m.runIdent(ident)).then(() => reveal());
+else reveal();
 
 // Cada página carga solo lo que usa
 const reel = document.querySelector('[data-homereel]');

@@ -61,7 +61,7 @@ export function Folio({ n, total, title }) {
 
 /** LightSwitch: el interruptor de «Apaga la luz», la puerta a la historia. */
 export function LightSwitch({ href, label }) {
-  return `<a class="lightswitch" href="${href}"><span class="lightswitch__placa" aria-hidden="true"><span></span></span>${esc(label)}</a>`;
+  return `<a class="lightswitch" href="${href}" data-apagar><span class="lightswitch__placa" aria-hidden="true"><span></span></span>${esc(label)}</a>`;
 }
 
 /** RakunEye: el ojo de RAKÜN en monocromático (toma el color del texto). */

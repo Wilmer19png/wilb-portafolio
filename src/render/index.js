@@ -5,7 +5,7 @@ import { projects, bySlug, loc } from '../data/projects.js';
 import { esc, Tape, Grain, RakunEye } from './atoms.js';
 import { ChapterTitle, Credits, YouTubeLite } from './molecules.js';
 import { mediaFor } from '../data/media.js';
-import { Header, Footer, hasTone, HomeReel, WorksOverview, AllWorksPill } from './organisms.js';
+import { Header, Footer, hasTone, HomeReel, WorksOverview, AllWorksPill, LogoIdent } from './organisms.js';
 export * from './system.js';
 
 // <head> común: título, descripción, enlaces entre idiomas (hreflang) y el tono guardado
@@ -39,6 +39,7 @@ export function title(ctx) {
 }
 
 export const homeReel = HomeReel;
+export const logoIdent = LogoIdent;
 export const worksOverview = WorksOverview;
 export const allWorksPill = AllWorksPill;
 
